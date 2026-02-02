@@ -5,25 +5,25 @@ import { AuthProvider, useAuth } from '../context/auth';
 import './global.css';
 
 const RootLayoutNav = () => {
-  const {user,loading,role} = useAuth();
+  const {loading,role} = useAuth();
   const segments = useSegments();
   const router = useRouter();
-
 
   useEffect(() => {
     if (loading) return;
     const inAuthGroup = segments[0] === '(auth)';
-    if (!user && !inAuthGroup) {
-      router.replace('/(artist)/dashboard');
-    } else if (user && inAuthGroup) {
+    const isAuthenticated = !!role;
+    if ( !isAuthenticated && !inAuthGroup) {
+      router.replace('/(auth)/userlogin' );
+    } else if (isAuthenticated && inAuthGroup) {
       // Redirect based on role
       if (role === 'artist') {
-        router.replace('/(artist)' as any);
+        router.replace('/(artist)/dashboard' );
       } else {
         router.replace('/(tabs)');
       }
     }
-  }, [user, loading, segments, role]);
+  }, [loading, segments, role]);
   if(loading){
     return <>
     <View className='flex-1 justify-center items-center'>

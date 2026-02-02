@@ -8,8 +8,7 @@ const Login = () => {
     const [password, setPassword] = useState("")
     const {signIn} = useAuth();
     
-    const ipAddress = process.env.IP_ADDRESS;
-    const url =  `http://${ipAddress}:5000/api/auth/login`;
+    const url =  `http://192.168.113.202:5000/api/auth/login`;
     const handleLogin = async () => {
       try {
         const response = await fetch(url, {
@@ -20,8 +19,9 @@ const Login = () => {
             body: JSON.stringify({ email, password }),
           });
           const data = await response.json();
+          console.log(`login data: ${JSON.stringify(data)}`);
           if (response.ok) {
-            signIn({ token: data.token, role: 'user' });
+            signIn({ token: data.user.token, role: 'user' });
           } else {
             alert(data.message || "Login failed. Please try again.");
           }

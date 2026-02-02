@@ -1,8 +1,8 @@
-import User from '../models/user.js'
-import Artist from '../models/artist.js';
 import bcrypt from "bcryptjs";
 import dotenv from 'dotenv';
 import jwt from 'jsonwebtoken';
+import Artist from '../models/artist.js';
+import User from '../models/user.js';
 
 
 
@@ -157,6 +157,7 @@ export const artistLogin = async(req, res) => {
 
         res.status(200).cookie('token', token, options).json({ success:true, artist });
   } catch (error) {
+    console.log(error);
     res.status(500).json({success: false, message: "Internal Server Error"});
   }
 }

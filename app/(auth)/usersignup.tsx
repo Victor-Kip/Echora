@@ -9,8 +9,7 @@ const Signup = () => {
     const [confirmPassword, setConfirmPassword] = useState("");
     const [showPassword, setShowPassword] = useState(false);
 
-    const ipAddress = process.env.IP_ADDRESS;
-    const url = `http://${ipAddress}:5000/api/auth/register`;
+    const url = `http://192.168.113.202:5000/api/auth/register`;
     const handleSignUp = async () => {
       if (password !== confirmPassword) {
         alert("Passwords do not match");

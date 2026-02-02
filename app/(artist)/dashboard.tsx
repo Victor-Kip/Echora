@@ -2,9 +2,11 @@ import { Feather, MaterialCommunityIcons } from '@expo/vector-icons';
 import React, { useState } from "react";
 import { ScrollView, Text, TextInput, TouchableOpacity, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { useAuth } from '../../context/auth';
 
 const Dashboard = () => {
     const [activeTab,setActiveTab] = useState<'dashboard'|'stats'|'earnings'>('dashboard');
+    const {signOut} = useAuth();
 
     const showContent = () => {
         switch(activeTab){
@@ -137,6 +139,10 @@ const Dashboard = () => {
                         </TouchableOpacity>
                     </View>
                     {showContent()}
+                    <TouchableOpacity className='bg-red-500 px-6 py-3 rounded-xl items-center shadow-lg mb-10 mt-4'
+                    onPress={signOut}>
+                        <Text className='text-white font-bold text-lg'>Logout</Text>
+                    </TouchableOpacity>
                 </ScrollView>
         </SafeAreaView>
     );

@@ -1,8 +1,10 @@
+import { useRouter } from "expo-router";
 import React, { useState } from "react";
 import { Text, TextInput, TouchableOpacity, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 const ArtistSignup = () => {
+    const router = useRouter();
     const [username, setUsername] = useState("");
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
@@ -11,7 +13,7 @@ const ArtistSignup = () => {
     const [genre, setGenre] = useState("");
 
     const ipAddress = process.env.IP_ADDRESS;
-    const url = `http://${ipAddress}:5000/api/auth/artist-register`;
+    const url = `http://192.168.113.202:5000/api/auth/artist-register`;
     const handleSignUp = async () => {
       if (password !== confirmPassword) {
         alert("Passwords do not match");
@@ -26,10 +28,9 @@ const ArtistSignup = () => {
           body: JSON.stringify({username, email, password, genre}),
         });
         const data = await response.json();
-        console.log(`signup data: ${JSON.stringify(data)}`);
         if (response.ok) {
-          alert("Signup successful! Please log in.");
-          window.location.href = "/(auth)/artist-login";
+          alert("Signup successful! Please log in.")
+          router.replace("/(auth)/artistlogin");
         } else {
           alert(data.message || "Signup failed. Please try again.");
         }

@@ -29,6 +29,7 @@ export function AuthProvider({ children }) {
         await AsyncStorage.setItem("authData", JSON.stringify({ token, role }));
         setToken(token);
         setRole(role);
+        
     };
 
     const signOut = async () => {

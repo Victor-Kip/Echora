@@ -3,13 +3,13 @@ import React, { useState } from "react";
 import { Text, TextInput, TouchableOpacity } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useAuth } from "../../context/auth";
-const Login = () => {
+
+const ArtistLogin = () => {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("")
 
         const {signIn} = useAuth();
-        const ipAddress = process.env.IP_ADDRESS;
-        const url =  `http://${ipAddress}:5000/api/auth/artist-login`;
+        const url =  `http://192.168.113.202:5000/api/auth/artist-login`;
         const handleLogin = async () => {
           try {
             const response = await fetch(url, {
@@ -21,7 +21,7 @@ const Login = () => {
             });
             const data = await response.json();
             if (response.ok) {
-              signIn({ token: data.token, role: 'artist' });
+              signIn({ token: data.artist.token, role: 'artist' });
             } else {
               alert(data.message || "Login failed. Please try again.");
             }
@@ -59,4 +59,4 @@ const Login = () => {
     </SafeAreaView>
   );
 }
-export default Login;
+export default ArtistLogin;
