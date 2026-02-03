@@ -51,8 +51,25 @@ const Dashboard = () => {
             case 'stats':
                 return (
                     <View className="flex-1 ">
-                        <Text className="text-white text-2xl">Stats Content</Text>
+                         <Text className="text-white text-2xl font-bold">Stats </Text>
+                         <View className='bg-gray-100 rounded-2xl p-5 mb-4 shaodow-sm '>
+                            <View className='flex-row justify-between items-center mb-4'>
+                                <View className='flex-row items-center'>
+                                    <View className='bg-blue-300 p-3 rounded-full mr-3'>
+                                        <Feather name="play" size={24} color="white" />
+                                    </View>
+                                    <Text className='text-indigo-900 font-bold text-lg'>Total Plays</Text>
+                                </View>
+                                <Text className='text-indigo-900 font-bold text-2xl'>0</Text>
+                            </View>
+                            <View className='flex-row justify-between items-end mt-2'>
+                                <View>
+                                    <Text className='text-indigo-900 font-bold text-lg'>Recent Plays</Text>
+                                </View>
+                            </View>
+                         </View>                         
                     </View>
+
                 );
             case 'earnings':
                 return (
