@@ -1,13 +1,76 @@
 import { Feather, MaterialCommunityIcons } from '@expo/vector-icons';
+import { Button } from '@react-navigation/elements';
+import * as DocumentPicker from 'expo-document-picker';
 import React, { useState } from "react";
-import { ScrollView, Text, TextInput, TouchableOpacity, View } from "react-native";
+import { Alert, ScrollView, Text, TextInput, TouchableOpacity, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useAuth } from '../../context/auth';
 
+const url = 'https://192.168.1.1:3000/api/audio/upload';
 const Dashboard = () => {
     const [activeTab,setActiveTab] = useState<'dashboard'|'stats'|'earnings'>('dashboard');
     const {signOut} = useAuth();
+    const [selectedFile, setSelectedFile] = useState<DocumentPicker.DocumentPickerAsset| null>(null);
+    const [isUploading, setIsUploading] = useState(false);
+    const [error,setError] = useState<string | null>(null);
+    const [successMessage,setSuccessMessage] = useState<string | null>(null);
 
+    const handlePickDocument = async () => {
+        setSelectedFile(null);
+        setError(null);
+        setSuccessMessage(null);
+
+        try{
+            const result = await DocumentPicker.getDocumentAsync({
+                type:'audio/*',
+                copyToCacheDirectory:true,
+            });
+            if(!result.canceled && result.assets && result.assets.length > 0){
+                setSelectedFile(result.assets[0]);
+        }
+        }
+        catch (err){
+            console.log('Document pick error:', err);
+            setError('Failed to pick document. Please try again.');
+        }
+    };
+    const handleUpload = async () => {
+        if(!selectedFile){
+            Alert.alert('No file selected', 'Please select an audio file .');
+            return;
+        }
+    
+
+    const formData = new FormData();
+    formData.append('audio', {
+        uri: selectedFile.uri,
+        name: selectedFile.name,
+        type: selectedFile.mimeType || 'application/octet-stream',
+    } as any);
+    formData.append('audio', 'fileToUpload');
+    setIsUploading(true);
+    setError(null);
+    setSuccessMessage(null);
+
+    try{
+        const response = await fetch(url, {
+            method:'POST',
+            headers:{}
+        })
+    
+    const responseJson = await response.json();
+    if(!response.ok){
+        throw new Error(responseJson.message || 'Upload failed');
+    }
+    setSuccessMessage(`Successfully uploaded ${responseJson.fileName}   `);
+    setSelectedFile(null);
+    }
+    catch (err: any){
+        setError(err.message || 'Upload failed');
+    }
+    finally {
+        setIsUploading(false);
+    }}
     const showContent = () => {
         switch(activeTab){
             case 'dashboard':
@@ -17,9 +80,19 @@ const Dashboard = () => {
                     <View className='border-2 border-dashed border-blue-300 rounded-2xl items-center justify-center py-10 mb-6 bg-gray-100'>
                         <Feather name="upload" size={48} color="gray" className='mb-3' />
                         <Text className='text-gray-400 text-center px-8 py-3 mb-4'>Drag and drop your audio files here</Text>
-                        <TouchableOpacity className='bg-blue-100 px-8 py-3 rounded-xl'>
+                        <TouchableOpacity className='bg-blue-100 px-8 py-3 rounded-xl'
+                        onPress={handlePickDocument}>
                             <Text className='font-bold text-gray-700'>Upload Audio</Text>
                         </TouchableOpacity>
+                        {selectedFile && (
+                            <Text className='text-green-600 mt-4'>Selected File: {selectedFile.name}</Text>
+                        )}
+                        <View className='mt-6'>
+                            <Button 
+                            title = {isUploading ? 'Uploading...' : 'Upload'}
+                            onPress={handleUpload}
+                            disabled = {!selectedFile || isUploading}/>
+                        </View>
                     </View>
                     <Text className="text-white text-lg font-semibold mb-2">Song Name</Text>
                     <TextInput
