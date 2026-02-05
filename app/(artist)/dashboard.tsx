@@ -2,18 +2,21 @@ import { Feather, MaterialCommunityIcons } from '@expo/vector-icons';
 import { Button } from '@react-navigation/elements';
 import * as DocumentPicker from 'expo-document-picker';
 import React, { useState } from "react";
-import { Alert, ScrollView, Text, TextInput, TouchableOpacity, View } from "react-native";
+import { ScrollView, Text, TextInput, TouchableOpacity, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useAuth } from '../../context/auth';
 
-const url = 'https://192.168.1.1:3000/api/audio/upload';
+const url = 'http://192.168.1.22:5000/audio/new';
 const Dashboard = () => {
     const [activeTab,setActiveTab] = useState<'dashboard'|'stats'|'earnings'>('dashboard');
     const {signOut} = useAuth();
     const [selectedFile, setSelectedFile] = useState<DocumentPicker.DocumentPickerAsset| null>(null);
+    const [selectedCoverImage, setSelectedCoverImage] = useState<DocumentPicker.DocumentPickerAsset| null>(null);
     const [isUploading, setIsUploading] = useState(false);
     const [error,setError] = useState<string | null>(null);
     const [successMessage,setSuccessMessage] = useState<string | null>(null);
+    const [songName, setSongName] = useState('');
+    const [genre, setGenre] = useState('');
 
     const handlePickDocument = async () => {
         setSelectedFile(null);
@@ -27,16 +30,41 @@ const Dashboard = () => {
             });
             if(!result.canceled && result.assets && result.assets.length > 0){
                 setSelectedFile(result.assets[0]);
+                console.log('Selected file:', result.assets[0]);
         }
         }
         catch (err){
             console.log('Document pick error:', err);
-            setError('Failed to pick document. Please try again.');
+            setError('Failed to pick audio file. Please try again.');
+        }
+    };
+    const handlePickCoverImage = async () => {
+        setSelectedCoverImage(null);
+        try{
+            const result = await DocumentPicker.getDocumentAsync({
+                type:'image/*',
+            copyToCacheDirectory:true,
+            });
+            if(!result.canceled && result.assets && result.assets.length > 0){
+                setSelectedCoverImage(result.assets[0]);
+            }
+        }
+        catch (err){
+            console.log('Cover image pick error:', err);
+            setError('Failed to pick cover image. Please try again.');
         }
     };
     const handleUpload = async () => {
         if(!selectedFile){
-            Alert.alert('No file selected', 'Please select an audio file .');
+            console.log('No file selected');
+            return;
+        }
+        if(!songName.trim()){
+            console.log('Missing song name');
+            return;
+        }
+        if(!genre.trim()){
+            console.log('Missing genre');
             return;
         }
     
@@ -47,26 +75,37 @@ const Dashboard = () => {
         name: selectedFile.name,
         type: selectedFile.mimeType || 'application/octet-stream',
     } as any);
-    formData.append('audio', 'fileToUpload');
+    formData.append('songName', songName);
+    formData.append('genre', genre);
+    if (selectedCoverImage){
+        formData.append('coverImage', {
+            uri: selectedCoverImage.uri,
+            name: selectedCoverImage.name,
+            type: selectedCoverImage.mimeType || 'application/octet-stream',
+        } as any);
+    }
     setIsUploading(true);
     setError(null);
     setSuccessMessage(null);
-
     try{
         const response = await fetch(url, {
             method:'POST',
-            headers:{}
+            headers:{},
+            body: formData,
         })
-    
+        
     const responseJson = await response.json();
     if(!response.ok){
-        throw new Error(responseJson.message || 'Upload failed');
+        setError(responseJson.message || 'Upload failed');
+        console.log('Upload failed:', responseJson);
     }
     setSuccessMessage(`Successfully uploaded ${responseJson.fileName}   `);
+    console.log('Upload successful:', responseJson);
     setSelectedFile(null);
     }
     catch (err: any){
         setError(err.message || 'Upload failed');
+        console.log('Upload error:', err);
     }
     finally {
         setIsUploading(false);
@@ -90,7 +129,7 @@ const Dashboard = () => {
                         <View className='mt-6'>
                             <Button 
                             title = {isUploading ? 'Uploading...' : 'Upload'}
-                            onPress={handleUpload}
+                            onPress={handlePickDocument}
                             disabled = {!selectedFile || isUploading}/>
                         </View>
                     </View>
@@ -98,6 +137,8 @@ const Dashboard = () => {
                     <TextInput
                     className='bg-gray-100 rounded-xl p-4 mb-6 text-white border border-gray-100'
                     placeholder='song name'
+                    value={songName}
+                    onChangeText={setSongName}
                     placeholderTextColor="gray-50"/>
                     <View className='flex-row justify-between mb-8'>
                         <View className='flex-1 mr-4'>
@@ -105,17 +146,22 @@ const Dashboard = () => {
                             <View className='border-2 border-dashed border-blue-300 rounded-xl h-32 bg-gray-50 p-2'>
                                 <TextInput
                                 className='flex-1 text-black'
-                                multiline/>
+                                multiline
+                                value={genre}
+                                onChangeText={setGenre}/>
                             </View>
                         </View>
                         <View className='w-1/3'>
                             <Text className='text-white font-semibold mb-2 text-center text-xs'>Upload cover image (optional)</Text>
-                            <TouchableOpacity className='border-2 border-dashed border-blue-300 rounded-xl h-32 bg-gray-50  items-center justify-center'>
-                                <Feather name="image" size={32} color="gray" />
+                            <TouchableOpacity onPress={handlePickCoverImage}>
+                                {selectedCoverImage ? (<Text className='text-gray-700 text-center'>{selectedCoverImage.name}</Text>) : <Feather name="image" size={32} color="gray" />}
                             </TouchableOpacity>
                         </View>
                     </View>
-                    <TouchableOpacity className='bg-blue-300 px-6 py-3 rounded-xl items-center  mb-10'>
+                    <TouchableOpacity 
+                    onPress={handleUpload}
+                    disabled={isUploading}
+                    className='bg-blue-300 px-6 py-3 rounded-xl items-center  mb-10'>
                         <Text className='text-white font-bold text-lg'>Publish Track</Text>
                     </TouchableOpacity>
                 
