@@ -46,3 +46,6 @@ app-example
 .env
 # gemini markdown file
 GEMINI.md
+
+#webstorm files
+.idea
