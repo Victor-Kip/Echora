@@ -100,13 +100,13 @@ const Dashboard = () => {
         setError(responseJson.message || 'Upload failed');
         console.log('Upload failed:', responseJson);
     }
-    setSuccessMessage(`Successfully uploaded ${responseJson.fileName}   `);
-    console.log('Upload successful:', responseJson);
+    setSuccessMessage(responseJson.message);
+    alert(successMessage);
     setSelectedFile(null);
     }
     catch (err: any){
         setError(err.message || 'Upload failed');
-        console.log('Upload error:', err);
+        alert(`Upload failed ${error}`)
     }
     finally {
         setIsUploading(false);

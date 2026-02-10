@@ -9,7 +9,8 @@ const TabIcon = ({focused,title}:any)=>{
         margin:"auto"
         }} >
     <Text style={{
-        fontSize:10
+        fontSize:10,
+        color:"white"
         }}>
         {title}
     </Text>
@@ -23,10 +24,23 @@ const _Layout = ()=>{
         screenOptions={{
             tabBarShowLabel:false,
             tabBarItemStyle:{
-                minWidth:40,
-                minHeight:20
+                alignItems:"center",
+                justifyContent:"center",
+                width:"100%",
+                height:"100%"
+            },
+            tabBarStyle: {
+                backgroundColor:"#312d70",
+                borderRadius:10,
+                height:52,
+                marginHorizontal:5,
+                marginBottom:36,
+                position:"absolute",
+                borderWidth:1,
+                borderColor:"gray",
             }
-        }}>
+            }
+        }>
             <Tabs.Screen
             name="index"
             options={{
@@ -34,7 +48,7 @@ const _Layout = ()=>{
                 tabBarIcon:({focused})=>(
                     <TabIcon
                     focused = {focused}
-                    title = 'index'/>
+                    title = 'Home'/>
                 )
             }}
             />

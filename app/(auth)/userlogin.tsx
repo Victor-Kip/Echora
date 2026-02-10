@@ -8,7 +8,7 @@ const Login = () => {
     const [password, setPassword] = useState("")
     const {signIn} = useAuth();
     
-    const url =  `http://192.168.113.202:5000/api/auth/login`;
+    const url =  `http://10.218.252.202:5000/api/auth/login`;
     const handleLogin = async () => {
       try {
         const response = await fetch(url, {
