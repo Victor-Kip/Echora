@@ -50,6 +50,7 @@ const RootLayoutNav = () => {
       <Stack.Screen name="(auth)" options={{ headerShown: false }} />
       <Stack.Screen name="songs/[id]" options={{ headerShown: false }} />
       <Stack.Screen name="(artist)" options={{ headerShown: false }} />
+      <Stack.Screen name="(stack)" options={{ headerShown: false }} />
     </Stack>
   );
 };
