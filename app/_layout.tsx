@@ -8,7 +8,7 @@ const RootLayoutNav = () => {
   const { loading, role } = useAuth();
   const segments = useSegments();
   const router = useRouter();
-  console.log(`Current role in layout: ${role}`);
+  //console.log(`Current role in layout: ${role}`);
 
   useEffect(() => {
     if (loading) return;
@@ -51,6 +51,7 @@ const RootLayoutNav = () => {
       <Stack.Screen name="songs/[id]" options={{ headerShown: false }} />
       <Stack.Screen name="(artist)" options={{ headerShown: false }} />
       <Stack.Screen name="(stack)" options={{ headerShown: false }} />
+      <Stack.Screen name="items/[id]" options={{ headerShown: false }} />
     </Stack>
   );
 };
