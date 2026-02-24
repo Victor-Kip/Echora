@@ -12,7 +12,7 @@ const Items = ()=>{
                     <Text className="text-white font-bold text-3xl">Wavrr</Text>
                     <View className="flex-row items-center">
                         <Text className= "text-2xl text-white font-bold">Items</Text>
-                        <Feather name= "shopping-bag" size={24} color = "white" className=" p-2 mr-4 " />
+                        <Feather name= "shopping-bag" size={24} color="black" className=" bg-white rounded-full p-2 mx-3 border border-2 border-blue-500" />
                     </View>
                 </View>
                 <View className="flex-row items-center justify-around">

@@ -1,7 +1,9 @@
+import { Feather } from "@expo/vector-icons";
+import { useRouter } from "expo-router";
 import React from 'react';
-import {ScrollView, Text, TextInput, TouchableOpacity, View} from 'react-native';
-import {SafeAreaView} from "react-native-safe-area-context";
-import {Feather} from "@expo/vector-icons";
+import { ScrollView, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import { SafeAreaView } from "react-native-safe-area-context";
+const router = useRouter();
 const Index = () => {
     return (
         <SafeAreaView className = "flex-1 bg-indigo-900 ">
@@ -16,7 +18,9 @@ const Index = () => {
                 </View>
                 <View>
                     <Text className="text-white font-semibold text-2xl mb-2">Recently Played</Text>
-                    <View className="bg-gray-200 p-2 flex flex-row items-center justify-between rounded border mb-3">
+                    <TouchableOpacity
+                    onPress={() => router.push('./songs/1')}
+                     className="bg-gray-200 p-2 flex flex-row items-center justify-between rounded border mb-3">
                         <Text className="text-black font-semibold text-xl p-2">Song Name</Text>
                         <View className="flex-row items-center justify-between mr-2">
                             <TouchableOpacity>
@@ -24,7 +28,7 @@ const Index = () => {
                             </TouchableOpacity>
                             <Text className="font-semibold p-2">00.00</Text>
                         </View>
-                    </View>
+                    </TouchableOpacity>
                     <View className="bg-gray-200 p-2 flex flex-row items-center justify-between rounded border mb-3">
                         <Text className="text-black font-semibold text-xl p-2">Song Name</Text>
                         <View className="flex-row items-center justify-between mr-2">

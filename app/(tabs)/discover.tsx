@@ -1,8 +1,8 @@
+import { Feather } from "@expo/vector-icons";
 import React from "react";
-import {ScrollView, Text, View, StyleSheet, TouchableOpacity} from "react-native";
-import {SafeAreaView} from "react-native-safe-area-context";
-import {Feather} from "@expo/vector-icons";
-import {Dropdown} from "react-native-element-dropdown"
+import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { Dropdown } from "react-native-element-dropdown";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 const styles = StyleSheet.create({
     dropdown:{
@@ -57,7 +57,7 @@ const Discover = ()=>{
                     <Text className="text-white font-bold text-3xl">Wavrr</Text>
                     <View className="flex-row items-center">
                         <Text className="text-white font-bold text-2xl">Discover</Text>
-                        <Feather name="compass" size={24} color = "white" className=" p-2 mr-4 " />
+                        <Feather name="compass" size={24}color="black" className=" bg-white rounded-full p-2 mx-3 border border-2 border-blue-500" />
                     </View>
                 </View>
                 <View>
