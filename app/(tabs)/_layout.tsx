@@ -1,3 +1,4 @@
+import { Feather } from "@expo/vector-icons";
 import { Tabs } from "expo-router";
 import React from "react";
 import { Text, View } from "react-native";
@@ -23,21 +24,30 @@ const _Layout = ()=>{
         <Tabs
         screenOptions={{
             tabBarShowLabel:false,
+            tabBarActiveTintColor:'#3B82F6',
+            tabBarInactiveTintColor:'#94a3b8',
             tabBarItemStyle:{
+                borderRadius:32,
+                height:40,
+                marginHorizontal:5,
                 alignItems:"center",
                 justifyContent:"center",
-                width:"100%",
-                height:"100%"
+                backgroundImage:"url(../../assets/highlight.png)",
             },
             tabBarStyle: {
                 backgroundColor:"#312d70",
-                borderRadius:10,
-                height:52,
+                borderRadius:32,
+                height:42,
                 marginHorizontal:5,
-                marginBottom:36,
                 position:"absolute",
-                borderWidth:1,
-                borderColor:"gray",
+                alignItems:"center",
+                justifyContent:"center",
+                borderTopWidth:0,
+                bottom:40,
+                left:20,
+                right:20,
+                paddingBottom:0,
+                
             }
             }
         }>
@@ -45,10 +55,14 @@ const _Layout = ()=>{
             name="index"
             options={{
                 headerShown:false,
-                tabBarIcon:({focused})=>(
+                tabBarIcon:({focused,color})=>(
+                    <>
+                    <Feather name="home" size={focused ? 28 : 22} color={color} style={{position:"absolute", top:2}} />
                     <TabIcon
-                    focused = {focused}
-                    title = 'Home'/>
+                    focused = {focused} 
+                    
+                    />
+                    </>
                 )
             }}
             />
@@ -56,10 +70,15 @@ const _Layout = ()=>{
             name="discover"
             options={{
                 headerShown:false,
-                tabBarIcon:({focused})=>(
+                tabBarIcon:({focused,color})=>(
+                   <>
+                    <Feather name="search" size={focused ? 28 : 22} color={color} style={{position:"absolute", top:2}} />
                     <TabIcon
                     focused = {focused}
-                    title = 'Discover'/>
+                
+
+                    />
+                    </>
                 )
             }}
             />
@@ -67,10 +86,13 @@ const _Layout = ()=>{
             name="connect"
             options={{
                 headerShown:false,
-                tabBarIcon:({focused})=>(
+                tabBarIcon:({focused,color})=>(
+                <>
+                    <Feather name="message-circle" size={focused ? 28 : 22} color={color} style={{position:"absolute", top:2}} />
                     <TabIcon
                     focused = {focused}
-                    title = 'Connect'/>
+                    />
+                    </>
                 )
             }}
             />
@@ -79,10 +101,13 @@ const _Layout = ()=>{
             
             options={{
                 headerShown:false,
-                tabBarIcon:({focused})=>(
+                tabBarIcon:({focused,color})=>(
+                    <>
+                    <Feather name="shopping-cart" size={focused ? 28 : 22} color={color} style={{position:"absolute", top:2}} />
                     <TabIcon
                     focused = {focused}
-                    title = 'Items'/>
+                    />
+                    </>
                 )
             }}
             />
