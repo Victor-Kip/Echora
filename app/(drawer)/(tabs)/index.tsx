@@ -1,15 +1,30 @@
 import { Feather } from "@expo/vector-icons";
-import { useRouter } from "expo-router";
+import { DrawerActions } from "@react-navigation/native";
+import { useNavigation, useRouter } from "expo-router";
 import React from 'react';
-import { ScrollView, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import { Pressable, ScrollView, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import { SafeAreaView } from "react-native-safe-area-context";
-const router = useRouter();
+
+
+  
+
 const Index = () => {
+
+    const router = useRouter();
+    const navigation = useNavigation();
+    const openDrawer = ()=>{
+        navigation.dispatch(DrawerActions.openDrawer())
+    };
     return (
         <SafeAreaView className = "flex-1 bg-indigo-900 ">
             <ScrollView className="px-6 pt-4">
                 <View className="flex-row items-center justify-between mb-8 mt-2">
+                    <View>
                     <Text className="text-white font-bold text-3xl">Wavrr</Text>
+                    <Pressable onPress={openDrawer}>
+                    <Feather name="menu" size={24} color="white" />
+                </Pressable>
+                    </View>
                     <TextInput
                     placeholder={"Search for a song ..."}
                     placeholderTextColor="gray"

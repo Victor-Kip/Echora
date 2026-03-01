@@ -1,4 +1,5 @@
 import { Stack, useRouter, useSegments } from 'expo-router';
+
 import { useEffect } from 'react';
 import { ActivityIndicator, View } from 'react-native';
 import { AuthProvider, useAuth } from '../context/auth';
@@ -20,9 +21,9 @@ const RootLayoutNav = () => {
       router.replace('/(auth)/userlogin');
     } else if (isAuthenticated && inAuthGroup) {
       if (role === 'artist' && !inArtistGroup) {
-        router.replace('/(artist)/dashboard');
+        router.replace('/(drawer)/(artist)');
       } else if (role === 'user' && !inUserGroup) {
-        router.replace('/(tabs)');
+        router.replace('/(drawer)/(tabs)');
       }
     }
   }, [loading, segments, role]);
@@ -38,18 +39,15 @@ const RootLayoutNav = () => {
   }
 
   let initialRouteName = undefined;
-  if (role === 'artist') {
-    initialRouteName = '(artist)';
-  } else if (role === 'user') {
-    initialRouteName = '(tabs)';
+  if (role === 'artist' || role === 'user') {
+    initialRouteName = '(drawer)';
   }
 
   return (
     <Stack initialRouteName={initialRouteName}>
-      <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+      <Stack.Screen name="(drawer)" options={{ headerShown: false }} />
       <Stack.Screen name="(auth)" options={{ headerShown: false }} />
       <Stack.Screen name="songs/[id]" options={{ headerShown: false }} />
-      <Stack.Screen name="(artist)" options={{ headerShown: false }} />
       <Stack.Screen name="(stack)" options={{ headerShown: false }} />
       <Stack.Screen name="items/[id]" options={{ headerShown: false }} />
     </Stack>
