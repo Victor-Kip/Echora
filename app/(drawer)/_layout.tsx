@@ -1,17 +1,21 @@
+import { useAuth } from '@/context/auth';
 import { Feather } from '@expo/vector-icons';
 import { Drawer } from 'expo-router/drawer';
 
 export default function DrawerLayout() {
+  const {role} = useAuth() 
   return (
     <Drawer screenOptions={{headerShown:false}}>
-         <Drawer.Screen name="(tabs)" 
+         { role === 'artist' && <Drawer.Screen name="(artist)" 
          options={{
-          drawerItemStyle:{display:'none'}
-         }}  />
-         <Drawer.Screen name="(artist)" 
+          drawerItemStyle:{display:'none'},
+          title:'artist dashboard'
+         }}/>}
+         {role ==='user' && <Drawer.Screen name="(tabs)" 
          options={{
-          drawerItemStyle:{display:'none'}
-         }}/>
+          drawerItemStyle:{display:'none'},
+          title:'user dashboard'
+         }}  />}
          <Drawer.Screen name="settings" options={{
              drawerLabel: 'Settings',
              title: 'Settings',

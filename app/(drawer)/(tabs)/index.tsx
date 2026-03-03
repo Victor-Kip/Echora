@@ -5,11 +5,7 @@ import React from 'react';
 import { Pressable, ScrollView, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import { SafeAreaView } from "react-native-safe-area-context";
 
-
-  
-
 const Index = () => {
-
     const router = useRouter();
     const navigation = useNavigation();
     const openDrawer = ()=>{

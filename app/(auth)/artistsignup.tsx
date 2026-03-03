@@ -12,8 +12,8 @@ const ArtistSignup = () => {
     const [showPassword, setShowPassword] = useState(false);
     const [genre, setGenre] = useState("");
 
-    const ipAddress = process.env.IP_ADDRESS;
-    const url = `http://192.168.113.202:5000/api/auth/artist-register`;
+    const url = `http://192.168.1.14:5000/api/auth/artist-register`;
+    
     const handleSignUp = async () => {
       if (password !== confirmPassword) {
         alert("Passwords do not match");
@@ -41,7 +41,8 @@ const ArtistSignup = () => {
     return(
 
     <SafeAreaView className="flex-1 justify-center items-center bg-indigo-900">
-      <Text className="text-5xl text-white font-bold mb-9">WAVRR</Text>
+      <Text className="text-5xl text-white font-bold mb-3">WAVRR</Text>
+      <Text className="text-2xl text-white font-bold mb-5">Artist Registration</Text>
       <Text className="text-white font-bold mb-4">Create an account using your email and password</Text>
       <View className="flex-row items-center mb-4 ">
       </View>

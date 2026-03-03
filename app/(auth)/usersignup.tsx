@@ -39,6 +39,7 @@ const Signup = () => {
 
     <SafeAreaView className="flex-1 justify-center items-center bg-indigo-900">
       <Text className="text-5xl text-white font-bold mb-9">WAVRR</Text>
+      <Text className="text-2xl text-white font-bold mb-5">User Registration</Text>
       <Text className="text-white font-bold mb-4">Create an account using your email and password</Text>
       <View className="flex-row items-center mb-4 ">
       </View>

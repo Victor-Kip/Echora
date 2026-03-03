@@ -7,6 +7,7 @@ export function AuthProvider({ children }) {
     const [token, setToken] = useState(null);
     const [role, setRole] = useState(null);
     const [loading, setLoading] = useState(true);
+    const [user, setUser] = useState(null)
 
     useEffect(() => {
         const loadAuth = async () => {
@@ -15,20 +16,24 @@ export function AuthProvider({ children }) {
                 const { token, role } = JSON.parse(authData);
                 setToken(token);
                 setRole(role);
+                setUser(user)
             } else {
                 setToken(null);
                 setRole(null);
+                setUser(null);
             }
             setLoading(false);
         };
         loadAuth();
     }, [])
 
-    const signIn = async ({ token, role }) => {
+    const signIn = async ({ token, role,user }) => {
         if (!token || !role) return;
         await AsyncStorage.setItem("authData", JSON.stringify({ token, role }));
         setToken(token);
         setRole(role);
+        setUser(user);
+
         
     };
 
@@ -36,11 +41,12 @@ export function AuthProvider({ children }) {
         await AsyncStorage.removeItem("authData");
         setToken(null);
         setRole(null);
+        setUser(null)
     };
 
     return (
         <AuthContext.Provider
-            value={{ token, role, loading, setLoading, signIn, signOut }}
+            value={{ token, role,user, loading, setLoading, signIn, signOut }}
         >
             {children}
         </AuthContext.Provider>

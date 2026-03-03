@@ -8,7 +8,7 @@ const Login = () => {
     const [password, setPassword] = useState("")
     const {signIn} = useAuth();
     
-    const url =  `http://10.218.252.202:5000/api/auth/login`;
+    const url =  `http://192.168.1.14:5000/api/auth/login`;
     const handleLogin = async () => {
       try {
         const response = await fetch(url, {
@@ -21,7 +21,14 @@ const Login = () => {
           const data = await response.json();
           console.log(`login data: ${JSON.stringify(data)}`);
           if (response.ok) {
-            signIn({ token: data.user.token, role: 'user' });
+            signIn({
+               token: data.user.token,
+               role: 'user',
+               user:{
+                username:data.user.username,
+                email:data.user.email
+               }
+               });
           } else {
             alert(data.message || "Login failed. Please try again.");
           }
@@ -33,7 +40,8 @@ const Login = () => {
     return(
 
     <SafeAreaView className="flex-1 justify-center items-center bg-indigo-900">
-      <Text className="text-5xl text-white font-bold mb-9">WAVRR</Text>
+      <Text className="text-5xl text-white font-bold mb-2">WAVRR</Text>
+      <Text className="text-2xl text-white font-bold mb-5">User Login</Text>
       <Text className="text-white font-bold mb-4">Log in using your email and password</Text>
       <TextInput
         value={email}
