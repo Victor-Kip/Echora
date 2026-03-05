@@ -10,8 +10,8 @@ const items = [
     // Add more items as needed
 ];
 const images = [
-    "https://unsplash.com/photos/white-hotel-printed-crew-neck-shirt-on-black-surface-9ugEeqflo70",
-    "https://unsplash.com/photos/a-white-t-shirt-hanging-from-a-tree-2WeAYFTG69A"
+    "http://unsplash.com/photos/white-hotel-printed-crew-neck-shirt-on-black-surface-9ugEeqflo70",
+    "http://unsplash.com/photos/a-white-t-shirt-hanging-from-a-tree-2WeAYFTG69A"
 ]
 const styles = StyleSheet.create({
     dropdown:{
@@ -68,7 +68,7 @@ const ItemDetails = () => {
         );
     }
     return (
-        <SafeAreaView className="bg-indigo-900 flex-1 ">
+        <SafeAreaView className="bg-primary flex-1 ">
             <ScrollView className="px-6 pt-4">
             <View className="mt-2 p-6 justify-center items-center">
                 <Text className=" text-white text-3xl font-bold mb-2">{item.name}</Text>    

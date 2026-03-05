@@ -2,7 +2,7 @@ import { Stack, useRouter, useSegments } from 'expo-router';
 
 import { useEffect } from 'react';
 import { ActivityIndicator, Text, View } from 'react-native';
-import { AuthProvider, useAuth } from '../context/auth';
+import AuthProvider, { useAuth } from '../context/auth';
 import './global.css';
 
 const RootLayoutNav = () => {

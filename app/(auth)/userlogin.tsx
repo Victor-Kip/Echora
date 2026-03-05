@@ -4,45 +4,46 @@ import { Text, TextInput, TouchableOpacity } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useAuth } from "../../context/auth";
 const Login = () => {
-    const [email, setEmail] = useState("");
-    const [password, setPassword] = useState("")
-    const {signIn} = useAuth();
-    
-    const url =  `http://192.168.1.14:5000/api/auth/login`;
-    const handleLogin = async () => {
-      try {
-        const response = await fetch(url, {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({ email, password }),
-          });
-          const data = await response.json();
-          console.log(`login data: ${JSON.stringify(data)}`);
-          if (response.ok) {
-            signIn({
-               token: data.user.token,
-               role: 'user',
-               user:{
-                username:data.user.username,
-                email:data.user.email
-               }
-               });
-          } else {
-            alert(data.message || "Login failed. Please try again.");
-          }
-        } catch (error) {
-          alert(`An error occurred': ${error}`);
-        }
-      }
-    
-    return(
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const { signIn } = useAuth();
 
+  const url = `http://192.168.1.8:5000/api/auth/login`;
+  const handleLogin = async () => {
+    try {
+      const response = await fetch(url, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ email, password }),
+      });
+      const data = await response.json();
+      console.log(`login data: ${JSON.stringify(data)}`);
+      if (response.ok) {
+        signIn({
+          token: data.user.token,
+          role: "user",
+          user: {
+            username: data.user.username,
+            email: data.user.email,
+          },
+        });
+      } else {
+        alert(data.message || "Login failed. Please try again.");
+      }
+    } catch (error) {
+      alert(`An error occurred': ${error}`);
+    }
+  };
+
+  return (
     <SafeAreaView className="flex-1 justify-center items-center bg-indigo-900">
       <Text className="text-5xl text-white font-bold mb-2">WAVRR</Text>
       <Text className="text-2xl text-white font-bold mb-5">User Login</Text>
-      <Text className="text-white font-bold mb-4">Log in using your email and password</Text>
+      <Text className="text-white font-bold mb-4">
+        Log in using your email and password
+      </Text>
       <TextInput
         value={email}
         onChangeText={setEmail}
@@ -60,12 +61,22 @@ const Login = () => {
         className="w-72 h-12 bg-white text-black rounded px-4 mb-4 border border-blue-700"
         placeholderTextColor="#cbd5e1"
       />
-      <TouchableOpacity onPress={handleLogin} className="bg-blue-400 px-4 py-2 rounded mt-2 w-72">
+      <TouchableOpacity
+        onPress={handleLogin}
+        className="bg-blue-400 px-4 py-2 rounded mt-2 w-72"
+      >
         <Text className="text-white text-lg text-center font-bold">Log In</Text>
       </TouchableOpacity>
-      <Text className="text-white mt-4">Don't have an account? <Link className="text-blue-300" href="/(auth)/usersignup">Create one</Link></Text>
-      <Link className="text-blue-300 mt-4" href="/(auth)/artistlogin">Log in as artist</Link>
+      <Text className="text-white mt-4">
+        Don't have an account?{" "}
+        <Link className="text-blue-300" href="/(auth)/usersignup">
+          Create one
+        </Link>
+      </Text>
+      <Link className="text-blue-300 mt-4" href="/(auth)/artistlogin">
+        Log in as artist
+      </Link>
     </SafeAreaView>
   );
-}
+};
 export default Login;

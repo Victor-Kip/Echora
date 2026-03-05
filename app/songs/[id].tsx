@@ -14,7 +14,7 @@ const Playback = () => {
     const { id } = useLocalSearchParams();
     const song = songs.find((song) => song.id === id);
   return (
-    <SafeAreaView className='flex-1 bg-indigo-900'>
+    <SafeAreaView className='flex-1 bg-primary'>
         <ScrollView className='px-6 pt-4'>
             <View className = "flex-row items-center justify-between mb-8 mt-2">
                 <Text className = "text-white font-bold text-3xl">Wavrr</Text>

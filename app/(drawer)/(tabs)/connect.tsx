@@ -6,7 +6,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 
 const Connect = ()=>{
     return(
-        <SafeAreaView className="flex-1 bg-indigo-900">
+        <SafeAreaView className="flex-1 bg-primary">
             <ScrollView className="px-6 pt-4">
                 <View className="flex-row items-center justify-between mb-6 mt-2">
                     <Text className="text-white font-bold text-3xl">Wavrr</Text>
@@ -38,7 +38,7 @@ const Connect = ()=>{
                     <Feather name="user" size={24} color = "black" className=" p-2 mr-4 bg-white rounded-full " />
                     </TouchableOpacity>
                 </View>
-                <View className=" relative w-full h-48 bg-white items-center justify-center rounded-lg mb-6 ">
+                <View className=" relative  w-full h-48 bg-white items-center justify-center rounded-lg mb-6 ">
                     <View className="absolute top-0 left-0 flex-row items-center">
                     <Text className=" font-semibold p-2 text-lg">Arya Starr</Text>
                         <Feather name="check" size = {16} color="white" className="mr-2 bg-indigo-900 rounded-full " />

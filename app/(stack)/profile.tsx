@@ -3,7 +3,7 @@ import { ScrollView, Text, TouchableOpacity, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 const Profile = ()=>{
     return(
-        <SafeAreaView className="flex-1 bg-indigo-900 ">
+        <SafeAreaView className="flex-1 bg-primary ">
             <ScrollView className="p-6 pt-4">
                 <View className="flex-row justify-between items-center mb-6 mt-2">
                     <Text className="text-white font-bold text-3xl">Wavrr</Text>

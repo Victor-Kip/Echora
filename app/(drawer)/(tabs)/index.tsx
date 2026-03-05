@@ -11,8 +11,18 @@ const Index = () => {
     const openDrawer = ()=>{
         navigation.dispatch(DrawerActions.openDrawer())
     };
+    const songs = [
+        {id:'1',name:'Life on'},
+        {id:'2',name:'Today'},
+        {id:'3',name:'Heal the world'},
+    ]
+    const playlist = [
+        {id:'1',name:'Playlist 1'},
+        {id:'2',name:'Playlist 2'},
+        {id:'3',name: 'Playlist 3'},
+    ]
     return (
-        <SafeAreaView className = "flex-1 bg-indigo-900 ">
+        <SafeAreaView className = "flex-1 bg-primary ">
             <ScrollView className="px-6 pt-4">
                 <View className="flex-row items-center justify-between mb-8 mt-2">
                     <View>
@@ -29,67 +39,44 @@ const Index = () => {
                 </View>
                 <View>
                     <Text className="text-white font-semibold text-2xl mb-2">Recently Played</Text>
+                    {songs.map((item)=>(
                     <TouchableOpacity
-                    onPress={() => router.push('./songs/1')}
-                     className="bg-gray-200 p-2 flex flex-row items-center justify-between rounded border mb-3">
-                        <Text className="text-black font-semibold text-xl p-2">Song Name</Text>
+                    key={item.id}
+                    onPress={() => router.push('../songs/1')}
+                     className="bg-whiteview p-2 flex flex-row items-center justify-between rounded border mb-3">
+                        <Text className="text-indi font-semibold text-xl p-2">{item.name}</Text>
                         <View className="flex-row items-center justify-between mr-2">
                             <TouchableOpacity>
-                            <Feather name="play" size={24} className="p-2"/>
+                            <Feather name="play" size={24} className="p-2" color={'#3730a3'}/>
                             </TouchableOpacity>
-                            <Text className="font-semibold p-2">00.00</Text>
+                            <Text className=" text-indi font-semibold p-2">00.00</Text>
                         </View>
-                    </TouchableOpacity>
-                    <View className="bg-gray-200 p-2 flex flex-row items-center justify-between rounded border mb-3">
-                        <Text className="text-black font-semibold text-xl p-2">Song Name</Text>
-                        <View className="flex-row items-center justify-between mr-2">
-                            <TouchableOpacity>
-                                <Feather name="play" size={24} className="p-2"/>
-                            </TouchableOpacity>
-                            <Text className="font-semibold p-2">00.00</Text>
-                        </View>
-                    </View>
-                    <View className="bg-gray-200 p-2 flex flex-row items-center justify-between rounded border mb-3">
-                        <Text className="text-black font-semibold text-xl p-2">Song Name</Text>
-                        <View className="flex-row items-center justify-between mr-2">
-                            <TouchableOpacity>
-                                <Feather name="play" size={24} className="p-2"/>
-                            </TouchableOpacity>
-                            <Text className="font-semibold p-2">00.00</Text>
-                        </View>
-                    </View>
+                    </TouchableOpacity>))} 
                 </View>
                     <Text className="text-white font-semibold text-2xl mb-1 ">Based on Recents</Text>
                 <View className=" flex-row  h-36 items-center justify-between mb-3">
-                    <View className=" flex  p-7 bg-gray-200 items-center justify-center rounded">
-                        <Text>Playlist</Text>
-                        <Text >1</Text>
+                    {playlist.map((item)=>(
+                    <View  key={item.id} className=" flex h-24 p-7 bg-whiteview items-center justify-center rounded">
+                        <Text className="text-indi">Playlist 1</Text>
                     </View>
-                    <View className=" flex  p-7 bg-gray-200 items-center justify-center rounded">
-                        <Text>Playlist</Text>
-                        <Text >2</Text>
-                    </View>
-                    <View className="  flex p-7 bg-gray-200 items-center justify-center rounded">
-                        <Text>Playlist</Text>
-                        <Text >3</Text>
-                    </View>
+                    ))}
                 </View>
                 <Text className=" text-white font-semibold text-2xl mb-3" >Genres</Text>
                 <View className=" flex-row items-center justify-around mb-3">
                     <View>
-                        <View  className=" bg-gray-200 w-36 h-16 mb-3 items-center justify-center rounded-3xl ">
-                            <Text className="text-black text-xl font-semibold"> Pop</Text>
+                        <View  className=" bg-whiteview w-36 h-16 mb-3 items-center justify-center rounded-3xl ">
+                            <Text className="text-indi text-xl font-semibold"> Pop</Text>
                         </View>
-                        <View  className=" bg-gray-200 w-36 h-16 mb-3 items-center justify-center rounded-3xl">
-                            <Text className="text-black text-xl font-semibold"> Rnb</Text>
+                        <View  className=" bg-whiteview w-36 h-16 mb-3 items-center justify-center rounded-3xl">
+                            <Text className="text-indi text-xl font-semibold"> Rnb</Text>
                         </View>
                     </View>
                     <View>
-                        <View className=" bg-gray-200 w-36 h-16 mb-3 items-center justify-center rounded-3xl">
-                            <Text className="text-black text-xl font-semibold"> Rap</Text>
+                        <View className=" bg-whiteview w-36 h-16 mb-3 items-center justify-center rounded-3xl">
+                            <Text className="text-indi text-xl font-semibold"> Rap</Text>
                         </View>
-                        <View className=" bg-gray-200 w-36 h-16 mb-3 items-center justify-center rounded-3xl">
-                            <Text className="text-black text-xl font-semibold"> Rock</Text>
+                        <View className=" bg-whiteview w-36 h-16 mb-3 items-center justify-center rounded-3xl">
+                            <Text className="text-indi text-xl font-semibold"> Rock</Text>
                         </View >
                     </View>
                 </View>
