@@ -34,22 +34,22 @@ export default function DrawerLayout() {
         />
       )}
       <Drawer.Screen
-        name="settings"
-        options={{
-          drawerLabel: "Settings",
-          title: "Settings",
-          drawerIcon: ({ color }) => (
-            <Feather name="settings" size={24} color={color} />
-          ),
-        }}
-      />
-      <Drawer.Screen
         name="account"
         options={{
           drawerLabel: "Account",
           title: "Account",
           drawerIcon: ({ color }) => (
             <Feather name="user" size={24} color={color} />
+          ),
+        }}
+      />
+      <Drawer.Screen
+        name="settings"
+        options={{
+          drawerLabel: "Settings",
+          title: "Settings",
+          drawerIcon: ({ color }) => (
+            <Feather name="settings" size={24} color={color} />
           ),
         }}
       />
