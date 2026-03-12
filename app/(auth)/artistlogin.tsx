@@ -9,7 +9,7 @@ const ArtistLogin = () => {
   const [password, setPassword] = useState("");
 
   const { signIn } = useAuth();
-  const url = `http://192.168.1.8:5000/api/auth/artist-login`;
+  const url = `http://192.168.1.5:5000/api/auth/artist-login`;
   const handleLogin = async () => {
     try {
       const response = await fetch(url, {

@@ -2,11 +2,12 @@ import { Feather } from "@expo/vector-icons";
 import * as DocumentPicker from "expo-document-picker";
 import React, { useState } from "react";
 import {
-    ScrollView,
-    Text,
-    TextInput,
-    TouchableOpacity,
-    View,
+  Image,
+  ScrollView,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import Earnings from "./earnings";
@@ -115,11 +116,17 @@ const Dashboard = () => {
       setIsUploading(false);
     }
   };
+
   const showContent = () => {
     switch (activeTab) {
       case "dashboard":
         return (
           <View>
+            <View>
+              <Text className="text-white text-2xl font-bold mb-4">
+                Uploaded songs
+              </Text>
+            </View>
             <Text className="text-white text-2xl font-bold mb-4">
               Upload audio
             </Text>
@@ -135,9 +142,14 @@ const Dashboard = () => {
                 <Text className="font-bold text-gray-700">Upload Audio</Text>
               </TouchableOpacity>
               {selectedFile && (
-                <Text className="text-green-600 mt-4">
-                  Selected File: {selectedFile.name}
-                </Text>
+                <View>
+                  <Text className="text-green-600 mt-4">
+                    Selected File: {selectedFile.name}
+                  </Text>
+                  <TouchableOpacity className="bg-indigo-900 p-2 rounded full">
+                    <Feather name="play" color={"white"} size={16} />
+                  </TouchableOpacity>
+                </View>
               )}
             </View>
             <Text className="text-white text-lg font-semibold mb-2">
@@ -173,11 +185,12 @@ const Dashboard = () => {
                   onPress={handlePickCoverImage}
                   className="items-center"
                 >
-                  <View className="bg-white border-2 p-2 rounded-xl border-blue-300 border-solid">
+                  <View className="bg-white border-2  rounded-xl border-blue-300 border-solid">
                     {selectedCoverImage ? (
-                      <Text className="text-white text-center">
-                        {selectedCoverImage.name}
-                      </Text>
+                      <Image
+                        source={{ uri: selectedCoverImage.uri }}
+                        style={{ width: 75, height: 75, borderRadius: 10 }}
+                      ></Image>
                     ) : (
                       <Feather name="image" size={32} color="gray" />
                     )}
