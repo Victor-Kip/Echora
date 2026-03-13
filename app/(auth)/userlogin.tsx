@@ -1,39 +1,40 @@
+import axios from "axios";
 import { Link } from "expo-router";
 import React, { useState } from "react";
 import { Text, TextInput, TouchableOpacity } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useAuth } from "../../context/auth";
+import api from "../services/api";
+
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const { signIn } = useAuth();
 
-  const url = `http://192.168.1.5:5000/api/auth/login`;
   const handleLogin = async () => {
     try {
-      const response = await fetch(url, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ email, password }),
+      const response = await api.post("/auth/login", {
+        email,
+        password,
       });
-      const data = await response.json();
-      console.log(`login data: ${JSON.stringify(data)}`);
-      if (response.ok) {
-        signIn({
-          token: data.user.token,
-          role: "user",
-          user: {
-            username: data.user.username,
-            email: data.user.email,
-          },
-        });
+      const { user } = response.data;
+      const token = user?.token;
+      if (!token) throw new Error("Token missing from server");
+      signIn({
+        token: token,
+        role: "user",
+        user: {
+          username: user.username,
+          email: user.email,
+        },
+      });
+    } catch (error: any) {
+      if (axios.isAxiosError(error)) {
+        const errorMsg = error.response?.data?.message || "Login failed";
+        alert(errorMsg);
       } else {
-        alert(data.message || "Login failed. Please try again.");
+        alert(error.message || "An unexpected error occurred");
       }
-    } catch (error) {
-      alert(`An error occurred': ${error}`);
     }
   };
 
