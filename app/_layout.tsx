@@ -1,9 +1,10 @@
-import { Stack, useRouter, useSegments } from 'expo-router';
+import { Stack, useRouter, useSegments } from "expo-router";
 
-import { useEffect } from 'react';
-import { ActivityIndicator, Text, View } from 'react-native';
-import AuthProvider, { useAuth } from '../context/auth';
-import './global.css';
+import { MusicProvider } from "@/context/musicContext";
+import { useEffect } from "react";
+import { ActivityIndicator, Text, View } from "react-native";
+import AuthProvider, { useAuth } from "../context/auth";
+import "./global.css";
 
 const RootLayoutNav = () => {
   const { loading, role } = useAuth();
@@ -13,23 +14,25 @@ const RootLayoutNav = () => {
 
   useEffect(() => {
     if (loading) return;
-    const inAuthGroup = segments[0] === '(auth)';
+    const inAuthGroup = segments[0] === "(auth)";
     const isAuthenticated = !!role;
     if (!isAuthenticated && !inAuthGroup) {
-      router.replace('/(auth)/userlogin');
+      router.replace("/(auth)/userlogin");
     } else if (isAuthenticated && inAuthGroup) {
-       if (role === 'artist') {
-        router.replace('/(drawer)/(artist)/dashboard');
-      } else if (role === 'user') {
-        router.replace('/(drawer)/(tabs)');
-   22       }
-   23     }
+      if (role === "artist") {
+        router.replace("/(drawer)/(artist)/dashboard");
+      } else if (role === "user") {
+        router.replace("/(drawer)/(tabs)");
+        22;
+      }
+      23;
+    }
   }, [loading, segments, role]);
 
   if (loading) {
     return (
       <>
-        <View className='flex-1 justify-center items-center'>
+        <View className="flex-1 justify-center items-center">
           <ActivityIndicator size="large" />
           <Text>please wait</Text>
         </View>
@@ -37,16 +40,12 @@ const RootLayoutNav = () => {
     );
   }
 
-
- 
-  
-
   return (
     <Stack screenOptions={{ headerShown: false }}>
-      <Stack.Screen name="(drawer)"  />
-      <Stack.Screen name="(auth)"  />
+      <Stack.Screen name="(drawer)" />
+      <Stack.Screen name="(auth)" />
       <Stack.Screen name="songs/[id]" />
-      <Stack.Screen name="(stack)"  />
+      <Stack.Screen name="(stack)" />
       <Stack.Screen name="items/[id]" />
     </Stack>
   );
@@ -55,7 +54,9 @@ const RootLayoutNav = () => {
 export default function RootLayout() {
   return (
     <AuthProvider>
-      <RootLayoutNav />
+      <MusicProvider>
+        <RootLayoutNav />
+      </MusicProvider>
     </AuthProvider>
   );
 }

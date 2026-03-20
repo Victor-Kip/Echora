@@ -1,21 +1,23 @@
 import { Feather } from "@expo/vector-icons";
 import { DrawerActions } from "@react-navigation/native";
-import { Audio } from "expo-av";
 import { useNavigation, useRouter } from "expo-router";
 import React from "react";
 import {
-    Pressable,
-    ScrollView,
-    Text,
-    TextInput,
-    TouchableOpacity,
-    View,
+  Pressable,
+  ScrollView,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { LOCAL_SONGS } from "../../../constants/SONGS";
+import { useMusic } from "../../../context/musicContext";
 
 const Index = () => {
   const router = useRouter();
   const navigation = useNavigation();
+  const { playSong, tooglePlayPause, isPlaying } = useMusic();
   const openDrawer = () => {
     navigation.dispatch(DrawerActions.openDrawer());
   };
@@ -41,16 +43,6 @@ const Index = () => {
     { id: "2", name: "Playlist 2" },
     { id: "3", name: "Playlist 3" },
   ];
-  const playselectedAudio = async (audioUrl: string) => {
-    try {
-      const { sound } = await Audio.Sound.createAsync(
-        { uri: audioUrl },
-        { shouldPlay: true },
-      );
-    } catch (error) {
-      console.log(`Error playing audio:${error}`);
-    }
-  };
 
   return (
     <SafeAreaView className="flex-1 bg-primary ">
@@ -85,14 +77,43 @@ const Index = () => {
                 <TouchableOpacity
                   onPress={(e) => {
                     e.stopPropagation();
-                    playselectedAudio(item.url);
+                    playSong(item);
+                    {
+                      tooglePlayPause();
+                    }
                   }}
                 >
                   <Feather
-                    name="play"
-                    size={24}
-                    className="p-2"
-                    color={"#3730a3"}
+                    name={isPlaying ? "pause" : "play"}
+                    size={32}
+                    color="white"
+                  />
+                </TouchableOpacity>
+                <Text className=" text-indi font-semibold p-2">00.00</Text>
+              </View>
+            </TouchableOpacity>
+          ))}
+          {LOCAL_SONGS.map((item: any) => (
+            <TouchableOpacity
+              key={item.id}
+              onPress={() => router.push(`../songs/${item.id}`)}
+              className="bg-whiteview p-2 flex flex-row items-center justify-between rounded border mb-3"
+            >
+              <Text className="text-indi font-semibold text-xl p-2">
+                {item.name}
+              </Text>
+              <View className="flex-row items-center justify-between mr-2">
+                <TouchableOpacity
+                  onPress={(e) => {
+                    e.stopPropagation();
+                    playSong(item);
+                    tooglePlayPause();
+                  }}
+                >
+                  <Feather
+                    name={isPlaying ? "pause" : "play"}
+                    size={32}
+                    color="white"
                   />
                 </TouchableOpacity>
                 <Text className=" text-indi font-semibold p-2">00.00</Text>
