@@ -1,11 +1,14 @@
 import { useMusic } from "@/context/musicContext";
 import { Feather } from "@expo/vector-icons";
-import { ScrollView, Text, View } from "react-native";
+import { ScrollView, Text, TouchableOpacity, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 const Playback = () => {
-  const { currentSong, isPlaying, togglePlayPause } = useMusic();
+  const { currentSong, isPlaying, status, tooglePlayPause, playSong } =
+    useMusic();
   if (!currentSong) return <Text>No song selected</Text>;
+  const progress =
+    status?.duration > 0 ? (status.currentTime / status.duration) * 100 : 0;
   return (
     <SafeAreaView className="flex-1 bg-primary">
       <ScrollView className="px-6 pt-4">
@@ -31,19 +34,55 @@ const Playback = () => {
           <Text className="text-gray-800 text-base">Album Art Placeholder</Text>
         </View>
         <View className=" justify-center items-center mt-4">
-          <View className="border-top border-2 w-[90%] border-gray-400 rounded"></View>
+          <View className="justify-center items-center mt-6">
+            <View className="h-1.4 w-[90%] bg-gray-600 rounded-full overflow-hidden">
+              <View
+                className="h-1.4 bg-black"
+                style={{ width: `${progress}%` }}
+              ></View>
+            </View>
+          </View>
           <View className="flex-row items-center justify-between w-[90%] mt-2">
-            <Feather name="shuffle" size={24} color="white" className="p-2" />
-            <Feather name="heart" size={24} color="white" className="p-2" />
-            <Feather name="skip-back" size={24} color="white" className="p-2" />
-            <Feather name="play" size={32} color="white" className="p-2" />
-            <Feather
-              name="skip-forward"
-              size={24}
-              color="white"
-              className="p-2"
-            />
-            <Feather name="repeat" size={24} color="white" className="p-2" />
+            <TouchableOpacity>
+              <Feather name="shuffle" size={24} color="white" className="p-2" />
+            </TouchableOpacity>
+            <TouchableOpacity>
+              <Feather name="heart" size={24} color="white" className="p-2" />
+            </TouchableOpacity>
+            <TouchableOpacity>
+              <Feather
+                name="skip-back"
+                size={24}
+                color="white"
+                className="p-2"
+              />
+            </TouchableOpacity>
+            <TouchableOpacity>
+              <Feather
+                name={isPlaying ? "pause" : "play"}
+                size={32}
+                color="white"
+                className="p-2"
+                onPress={() => {
+                  if (currentSong?.id === currentSong?.id) {
+                    tooglePlayPause();
+                  } else {
+                    playSong(currentSong);
+                  }
+                }}
+              />
+            </TouchableOpacity>
+            <TouchableOpacity>
+              <Feather
+                name="skip-forward"
+                size={24}
+                color="white"
+                className="p-2"
+              />
+            </TouchableOpacity>
+            <TouchableOpacity>
+              <Feather name="repeat" size={24} color="white" className="p-2" />
+            </TouchableOpacity>
           </View>
         </View>
         <Text className="text-white text-2xl font-bold mb-1">Lyrics</Text>

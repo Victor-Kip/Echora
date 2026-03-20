@@ -17,7 +17,7 @@ import { useMusic } from "../../../context/musicContext";
 const Index = () => {
   const router = useRouter();
   const navigation = useNavigation();
-  const { playSong, tooglePlayPause, isPlaying } = useMusic();
+  const { playSong, tooglePlayPause, isPlaying, currentSong } = useMusic();
   const openDrawer = () => {
     navigation.dispatch(DrawerActions.openDrawer());
   };
@@ -77,14 +77,19 @@ const Index = () => {
                 <TouchableOpacity
                   onPress={(e) => {
                     e.stopPropagation();
-                    playSong(item);
-                    {
+                    if (currentSong?.id === item.id) {
                       tooglePlayPause();
+                    } else {
+                      playSong(item);
                     }
                   }}
                 >
                   <Feather
-                    name={isPlaying ? "pause" : "play"}
+                    name={
+                      isPlaying && currentSong?.id === item.id
+                        ? "pause"
+                        : "play"
+                    }
                     size={32}
                     color="white"
                   />
@@ -111,7 +116,11 @@ const Index = () => {
                   }}
                 >
                   <Feather
-                    name={isPlaying ? "pause" : "play"}
+                    name={
+                      isPlaying && currentSong?.id === item.id
+                        ? "pause"
+                        : "play"
+                    }
                     size={32}
                     color="white"
                   />
