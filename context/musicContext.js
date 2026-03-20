@@ -1,52 +1,43 @@
-import { Audio } from "expo-av";
-import { createContext, useContext, useEffect, useState } from "react";
+import { useAudioPlayer, useAudioPlayerStatus } from "expo-audio";
+import { createContext, useContext, useState } from "react";
 
 const MusicContext = createContext();
 export const MusicProvider = ({ children }) => {
-  const [sound, setSound] = useState(null);
-  const [isPlaying, setIsPlaying] = useState(false);
   const [currentSong, setCurrentSong] = useState(null);
 
-  useEffect(() => {
-    return sound
-      ? () => {
-          sound.unloadAsync();
-        }
-      : undefined;
-  }, [sound]);
+  const player = useAudioPlayer();
+  const status = useAudioPlayerStatus(player);
 
   const playSong = async (song) => {
     try {
-      if (sound) {
-        await sound.unloadAsync();
-      }
       const source =
         typeof song.url === "string" ? { uri: song.url } : song.url;
-      const { sound: newSound } = await Audio.Sound.createAsync(source, {
-        shouldPlay: true,
-      });
 
-      setSound(newSound);
       setCurrentSong(song);
-      setIsPlaying(true);
 
-      newSound.setOnPlaybackStatusUpdate((status) => {
-        if (status.didJustFinish) setIsPlaying(false);
-      });
+      player.replace(source);
+      player.play();
     } catch (error) {
       console.log(`PlaybackError${error}`);
     }
   };
-  const tooglePlayPause = async () => {
-    if (!sound) return;
-    if (isPlaying) await sound.pauseAsync();
-    else await sound.playAsync();
-    setIsPlaying(!isPlaying);
+  const tooglePlayPause = () => {
+    if (status.playing) {
+      player.pause();
+    } else {
+      player.play();
+    }
   };
 
   return (
     <MusicContext.Provider
-      value={{ currentSong, isPlaying, playSong, tooglePlayPause }}
+      value={{
+        currentSong,
+        isPlaying: status.playing,
+        playSong,
+        tooglePlayPause,
+        status,
+      }}
     >
       {children}
     </MusicContext.Provider>

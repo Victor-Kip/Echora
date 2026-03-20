@@ -21,8 +21,12 @@ const Playback = () => {
             />
           </View>
         </View>
-        <Text className="text-white text-2xl font-bold mb-1">{song?.name}</Text>
-        <Text className="text-gray-300 text-lg mb-2">{song?.artist}</Text>
+        <Text className="text-white text-2xl font-bold mb-1">
+          {currentSong?.name}
+        </Text>
+        <Text className="text-gray-300 text-lg mb-2">
+          {currentSong?.artist}
+        </Text>
         <View className="w-[100%] h-[250px] bg-white rounded justify-center items-center">
           <Text className="text-gray-800 text-base">Album Art Placeholder</Text>
         </View>
