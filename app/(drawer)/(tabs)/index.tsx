@@ -111,8 +111,11 @@ const Index = () => {
                 <TouchableOpacity
                   onPress={(e) => {
                     e.stopPropagation();
-                    playSong(item);
-                    tooglePlayPause();
+                    if (currentSong?.id === item.id) {
+                      tooglePlayPause();
+                    } else {
+                      playSong(item);
+                    }
                   }}
                 >
                   <Feather
