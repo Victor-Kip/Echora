@@ -4,7 +4,14 @@ import { ScrollView, Text, TouchableOpacity, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 const Playback = () => {
-  const { currentSong, player, isPlaying, tooglePlayPause } = useMusic();
+  const {
+    currentSong,
+    playNext,
+    playPrevious,
+    player,
+    isPlaying,
+    tooglePlayPause,
+  } = useMusic();
   if (!currentSong) return <Text>No song selected</Text>;
   const duration = player?.duration || 0;
   const currentTime = player?.currentTime || 0;
@@ -46,7 +53,11 @@ const Playback = () => {
             <TouchableOpacity>
               <Feather name="heart" size={24} color="white" className="p-2" />
             </TouchableOpacity>
-            <TouchableOpacity>
+            <TouchableOpacity
+              onPress={() => {
+                playPrevious();
+              }}
+            >
               <Feather
                 name="skip-back"
                 size={24}
@@ -66,7 +77,11 @@ const Playback = () => {
                 className="p-2"
               />
             </TouchableOpacity>
-            <TouchableOpacity>
+            <TouchableOpacity
+              onPress={() => {
+                playNext();
+              }}
+            >
               <Feather
                 name="skip-forward"
                 size={24}

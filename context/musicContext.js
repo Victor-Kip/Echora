@@ -1,3 +1,4 @@
+import { LOCAL_SONGS } from "@/constants/SONGS";
 import { useAudioPlayer, useAudioPlayerStatus } from "expo-audio";
 import { createContext, useContext, useState } from "react";
 
@@ -21,6 +22,17 @@ export const MusicProvider = ({ children }) => {
       console.log(`PlaybackError${error}`);
     }
   };
+  const playNext = () => {
+    const currentIndex = LOCAL_SONGS.findIndex((s) => s.id === currentSong.id);
+    const nextIndex = (currentIndex + 1) % LOCAL_SONGS.length;
+    playSong(LOCAL_SONGS[nextIndex]);
+  };
+  const playPrevious = () => {
+    const currentIndex = LOCAL_SONGS.findIndex((s) => s.id === currentSong.id);
+    const previousIndex =
+      (currentIndex - 1 + LOCAL_SONGS.length) % LOCAL_SONGS.length;
+    playSong(LOCAL_SONGS[previousIndex]);
+  };
   const tooglePlayPause = () => {
     if (status.playing) {
       player.pause();
@@ -36,6 +48,8 @@ export const MusicProvider = ({ children }) => {
         isPlaying: status.playing,
         playSong,
         tooglePlayPause,
+        playNext,
+        playPrevious,
         status,
         player,
       }}

@@ -23,16 +23,6 @@ const Index = () => {
   };
   const songs = [
     {
-      id: "1",
-      name: "Life on",
-      url: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3",
-    },
-    {
-      id: "2",
-      name: "Today",
-      url: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3",
-    },
-    {
       id: "3",
       name: "Heal the world",
       url: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3",
