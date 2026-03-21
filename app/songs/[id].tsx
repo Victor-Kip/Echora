@@ -11,11 +11,24 @@ const Playback = () => {
     player,
     isPlaying,
     tooglePlayPause,
+    togglePlaybackMode,
+    playBackMode,
   } = useMusic();
   if (!currentSong) return <Text>No song selected</Text>;
   const duration = player?.duration || 0;
   const currentTime = player?.currentTime || 0;
   const progress = duration > 0 ? (currentTime / duration) * 100 : 0;
+  const getModeIcon = () => {
+    switch (playBackMode) {
+      case "repeat":
+        return "repeat";
+      case "shuffle":
+        return "shuffle";
+      default:
+        return "music";
+    }
+  };
+
   return (
     <SafeAreaView className="flex-1 bg-primary">
       <ScrollView className="px-6 pt-4">
@@ -89,8 +102,13 @@ const Playback = () => {
                 className="p-2"
               />
             </TouchableOpacity>
-            <TouchableOpacity>
-              <Feather name="repeat" size={24} color="white" className="p-2" />
+            <TouchableOpacity onPress={() => togglePlaybackMode()}>
+              <Feather
+                name={getModeIcon()}
+                size={24}
+                color="white"
+                className="p-2"
+              />
             </TouchableOpacity>
           </View>
         </View>

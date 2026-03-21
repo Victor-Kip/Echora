@@ -1,14 +1,36 @@
 import { LOCAL_SONGS } from "@/constants/SONGS";
 import { useAudioPlayer, useAudioPlayerStatus } from "expo-audio";
-import { createContext, useContext, useState } from "react";
+import { createContext, useContext, useEffect, useState } from "react";
 
 const MusicContext = createContext();
 export const MusicProvider = ({ children }) => {
   const [currentSong, setCurrentSong] = useState(null);
+  const [playBackMode, setPlayBackMode] = useState("sequential"); // 'repeat', 'shuffle', 'normal'
 
   const player = useAudioPlayer();
   const status = useAudioPlayerStatus(player);
 
+  const togglePlaybackMode = () => {
+    setPlayBackMode((prevMode) => {
+      if (prevMode === "sequential") return "shuffle";
+      if (prevMode === "shuffle") return "repeat";
+      return "sequential";
+    });
+  };
+
+  useEffect(() => {
+    if (status.duration > 0 && status.currentTime >= status.duration - 1) {
+      if (playBackMode === "repeat") {
+        player.seekTo(0);
+        player.play();
+      } else if (playBackMode === "shuffle") {
+        const randomIndex = Math.floor(Math.random() * LOCAL_SONGS.length);
+        playSong(LOCAL_SONGS[randomIndex]);
+      } else {
+        playNext();
+      }
+    }
+  }, [status.currentTime, status.duration, playBackMode]);
   const playSong = async (song) => {
     try {
       const source =
@@ -52,6 +74,8 @@ export const MusicProvider = ({ children }) => {
         playPrevious,
         status,
         player,
+        togglePlaybackMode,
+        playBackMode,
       }}
     >
       {children}
