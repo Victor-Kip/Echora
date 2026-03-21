@@ -4,11 +4,11 @@ import { ScrollView, Text, TouchableOpacity, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 const Playback = () => {
-  const { currentSong, isPlaying, status, tooglePlayPause, playSong } =
-    useMusic();
+  const { currentSong, player, isPlaying, tooglePlayPause } = useMusic();
   if (!currentSong) return <Text>No song selected</Text>;
-  const progress =
-    status?.duration > 0 ? (status.currentTime / status.duration) * 100 : 0;
+  const duration = player?.duration || 0;
+  const currentTime = player?.currentTime || 0;
+  const progress = duration > 0 ? (currentTime / duration) * 100 : 0;
   return (
     <SafeAreaView className="flex-1 bg-primary">
       <ScrollView className="px-6 pt-4">
@@ -33,19 +33,16 @@ const Playback = () => {
         <View className="w-[100%] h-[250px] bg-white rounded justify-center items-center">
           <Text className="text-gray-800 text-base">Album Art Placeholder</Text>
         </View>
-        <View className=" justify-center items-center mt-4">
-          <View className="justify-center items-center mt-6">
-            <View className="h-1.4 w-[90%] bg-gray-600 rounded-full overflow-hidden">
+        <View className=" w-full justify-center items-center mt-4">
+          <View className="w-full justify-center items-center mt-2">
+            <View className="h-2 w-[95%] bg-gray-600 rounded-full overflow-hidden">
               <View
-                className="h-1.4 bg-black"
+                className="h-full bg-white"
                 style={{ width: `${progress}%` }}
               ></View>
             </View>
           </View>
           <View className="flex-row items-center justify-between w-[90%] mt-2">
-            <TouchableOpacity>
-              <Feather name="shuffle" size={24} color="white" className="p-2" />
-            </TouchableOpacity>
             <TouchableOpacity>
               <Feather name="heart" size={24} color="white" className="p-2" />
             </TouchableOpacity>
@@ -57,19 +54,16 @@ const Playback = () => {
                 className="p-2"
               />
             </TouchableOpacity>
-            <TouchableOpacity>
+            <TouchableOpacity
+              onPress={() => {
+                tooglePlayPause();
+              }}
+            >
               <Feather
                 name={isPlaying ? "pause" : "play"}
                 size={32}
                 color="white"
                 className="p-2"
-                onPress={() => {
-                  if (currentSong?.id === currentSong?.id) {
-                    tooglePlayPause();
-                  } else {
-                    playSong(currentSong);
-                  }
-                }}
               />
             </TouchableOpacity>
             <TouchableOpacity>

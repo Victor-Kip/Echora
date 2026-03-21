@@ -37,6 +37,7 @@ export const MusicProvider = ({ children }) => {
         playSong,
         tooglePlayPause,
         status,
+        player,
       }}
     >
       {children}
