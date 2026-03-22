@@ -1,9 +1,11 @@
 import { useMusic } from "@/context/musicContext";
 import { Feather } from "@expo/vector-icons";
+import { useState } from "react";
 import { ScrollView, Text, TouchableOpacity, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 const Playback = () => {
+  const [isLiked, setIsLiked] = useState(false);
   const {
     currentSong,
     playNext,
@@ -63,8 +65,17 @@ const Playback = () => {
             </View>
           </View>
           <View className="flex-row items-center justify-between w-[90%] mt-2">
-            <TouchableOpacity>
-              <Feather name="heart" size={24} color="white" className="p-2" />
+            <TouchableOpacity
+              onPress={() => {
+                setIsLiked(!isLiked);
+              }}
+            >
+              <Feather
+                name="heart"
+                size={24}
+                color={isLiked ? "red" : "white"}
+                className="p-2"
+              />
             </TouchableOpacity>
             <TouchableOpacity
               onPress={() => {
