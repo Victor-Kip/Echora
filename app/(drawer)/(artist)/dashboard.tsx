@@ -1,3 +1,4 @@
+import api from "@/app/services/api";
 import { Feather } from "@expo/vector-icons";
 import * as DocumentPicker from "expo-document-picker";
 import React, { useState } from "react";
@@ -13,8 +14,15 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import Earnings from "./earnings";
 import Stats from "./stats";
 
-const url = "http://10.218.252.202:5000/audio/new";
 const Dashboard = () => {
+  interface SongRecord {
+    id: string;
+    name: string;
+    uri: string;
+    genre: string;
+  }
+  const [songs, setSongs] = useState<SongRecord[]>([]);
+
   const [activeTab, setActiveTab] = useState<
     "dashboard" | "stats" | "earnings"
   >("dashboard");
@@ -95,23 +103,34 @@ const Dashboard = () => {
     setError(null);
     setSuccessMessage(null);
     try {
-      const response = await fetch(url, {
-        method: "POST",
-        headers: {},
-        body: formData,
+      const response = await api.post("/audio/new", formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
       });
 
-      const responseJson = await response.json();
-      if (!response.ok) {
-        setError(responseJson.message || "Upload failed");
-        console.log("Upload failed:", responseJson);
+      const responseJson = response.data;
+      if (!responseJson.success) {
+        throw new Error(responseJson.message || "Upload failed");
       }
       setSuccessMessage(responseJson.message);
-      alert(successMessage);
+      const newSong: SongRecord = {
+        id: Date.now().toString(),
+        name: songName,
+        genre: genre,
+        uri: selectedFile.uri,
+      };
+      setSongs((prevSongs) => [newSong, ...prevSongs]);
       setSelectedFile(null);
+      setSelectedCoverImage(null);
+      setSongName("");
+      setGenre("");
+      alert(responseJson.message || "Upload successful");
     } catch (err: any) {
-      setError(err.message || "Upload failed");
-      alert(`Upload failed ${error}`);
+      const errorMessage =
+        err.response?.data?.message || err.message || "Upload failed";
+      setError(errorMessage);
+      alert(`Upload failed: ${errorMessage}`);
     } finally {
       setIsUploading(false);
     }
@@ -133,7 +152,7 @@ const Dashboard = () => {
             <View className="border-2 border-solid border-blue-300 rounded-2xl items-center justify-center py-10 mb-6 bg-gray-100">
               <Feather name="upload" size={48} color="gray" className="mb-3" />
               <Text className="text-gray-400 text-center px-8 py-3 mb-4">
-                Drag and drop your audio files here
+                Click below to upload your audio file (MP3, WAV, etc.)
               </Text>
               <TouchableOpacity
                 className="bg-blue-100 px-8 py-3 rounded-xl"
@@ -146,9 +165,6 @@ const Dashboard = () => {
                   <Text className="text-green-600 mt-4">
                     Selected File: {selectedFile.name}
                   </Text>
-                  <TouchableOpacity className="bg-indigo-900 p-2 rounded full">
-                    <Feather name="play" color={"white"} size={16} />
-                  </TouchableOpacity>
                 </View>
               )}
             </View>
@@ -197,6 +213,28 @@ const Dashboard = () => {
                   </View>
                 </TouchableOpacity>
               </View>
+            </View>
+            <Text className="text-white text-lg font-semibold mb-2">
+              Uploaded songs
+            </Text>
+            <View className=" mb-6">
+              {songs.length === 0 ? (
+                <Text className="text-white">No songs uploaded yet</Text>
+              ) : (
+                songs.map((item) => (
+                  <View
+                    key={item.id}
+                    className="flex-row justify-around p-3 bg-whiteview border-2 border-blue-300 rounded-xl mb-3 items-center"
+                  >
+                    <Text className="text-indi text-lg font-semibold">
+                      {item.name}
+                    </Text>
+                    <TouchableOpacity className=" p-2 rounded full">
+                      <Feather name="play" color={"white"} size={24} />
+                    </TouchableOpacity>
+                  </View>
+                ))
+              )}
             </View>
             <TouchableOpacity
               onPress={handleUpload}
