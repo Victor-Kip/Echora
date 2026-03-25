@@ -1,4 +1,5 @@
 import api from "@/app/services/api";
+import { useMusic } from "@/context/musicContext";
 import { Feather } from "@expo/vector-icons";
 import * as DocumentPicker from "expo-document-picker";
 import React, { useState } from "react";
@@ -18,7 +19,7 @@ const Dashboard = () => {
   interface SongRecord {
     id: string;
     name: string;
-    uri: string;
+    url: string;
     genre: string;
   }
   const [songs, setSongs] = useState<SongRecord[]>([]);
@@ -118,7 +119,7 @@ const Dashboard = () => {
         id: Date.now().toString(),
         name: songName,
         genre: genre,
-        uri: selectedFile.uri,
+        url: selectedFile.uri,
       };
       setSongs((prevSongs) => [newSong, ...prevSongs]);
       setSelectedFile(null);
@@ -135,17 +136,13 @@ const Dashboard = () => {
       setIsUploading(false);
     }
   };
-
+  const { playSong, tooglePlayPause, currentSong, isPlaying } = useMusic();
   const showContent = () => {
     switch (activeTab) {
       case "dashboard":
         return (
           <View>
-            <View>
-              <Text className="text-white text-2xl font-bold mb-4">
-                Uploaded songs
-              </Text>
-            </View>
+            <View></View>
             <Text className="text-white text-2xl font-bold mb-4">
               Upload audio
             </Text>
@@ -178,7 +175,7 @@ const Dashboard = () => {
               onChangeText={setSongName}
               placeholderTextColor="gray-400"
             />
-            <View className="flex-row justify-between mb-8">
+            <View className="flex-row justify-between mb-8 items-center">
               <View className="flex-1 mr-4">
                 <Text className="text-white font-semibold text-lg mb-2 mt-2 ml-1">
                   Genre
@@ -229,8 +226,25 @@ const Dashboard = () => {
                     <Text className="text-indi text-lg font-semibold">
                       {item.name}
                     </Text>
-                    <TouchableOpacity className=" p-2 rounded full">
-                      <Feather name="play" color={"white"} size={24} />
+                    <TouchableOpacity
+                      className=" p-2 rounded full"
+                      onPress={() => {
+                        if (currentSong?.id === item.id) {
+                          tooglePlayPause();
+                        } else {
+                          playSong(item);
+                        }
+                      }}
+                    >
+                      <Feather
+                        name={
+                          isPlaying && currentSong?.id === item.id
+                            ? "pause"
+                            : "play"
+                        }
+                        color={"white"}
+                        size={24}
+                      />
                     </TouchableOpacity>
                   </View>
                 ))

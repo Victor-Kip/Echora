@@ -1,14 +1,18 @@
+import { LOCAL_SONGS } from "@/constants/SONGS";
 import { useMusic } from "@/context/musicContext";
 import { Feather } from "@expo/vector-icons";
-import { useState } from "react";
+import { useLocalSearchParams } from "expo-router";
+import { useMemo, useState } from "react";
 import { ScrollView, Text, TouchableOpacity, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-
 const Playback = () => {
+  const { id } = useLocalSearchParams();
+
   const [isLiked, setIsLiked] = useState(false);
   const {
     currentSong,
     playNext,
+    playSong,
     playPrevious,
     player,
     isPlaying,
@@ -16,10 +20,16 @@ const Playback = () => {
     togglePlaybackMode,
     playBackMode,
   } = useMusic();
-  if (!currentSong) return <Text>No song selected</Text>;
+  const songToShow = useMemo(() => {
+    const availableSongs = [...LOCAL_SONGS];
+    return availableSongs.find((song) => song.id === id) || currentSong;
+  }, [id, currentSong]);
+  if (!songToShow) return <Text>No song found</Text>;
+  const isViewingCurrent = currentSong?.id === songToShow.id;
   const duration = player?.duration || 0;
   const currentTime = player?.currentTime || 0;
-  const progress = duration > 0 ? (currentTime / duration) * 100 : 0;
+  const progress =
+    isViewingCurrent && duration > 0 ? (currentTime / duration) * 100 : 0;
   const getModeIcon = () => {
     switch (playBackMode) {
       case "repeat":
@@ -28,6 +38,13 @@ const Playback = () => {
         return "shuffle";
       default:
         return "music";
+    }
+  };
+  const handlePlayPause = () => {
+    if (isViewingCurrent) {
+      tooglePlayPause();
+    } else {
+      playSong(songToShow);
     }
   };
 
@@ -47,11 +64,9 @@ const Playback = () => {
           </View>
         </View>
         <Text className="text-white text-2xl font-bold mb-1">
-          {currentSong?.name}
+          {songToShow?.name}
         </Text>
-        <Text className="text-gray-300 text-lg mb-2">
-          {currentSong?.artist}
-        </Text>
+        <Text className="text-gray-300 text-lg mb-2">{songToShow?.artist}</Text>
         <View className="w-[100%] h-[250px] bg-white rounded justify-center items-center">
           <Text className="text-gray-800 text-base">Album Art Placeholder</Text>
         </View>
@@ -91,11 +106,11 @@ const Playback = () => {
             </TouchableOpacity>
             <TouchableOpacity
               onPress={() => {
-                tooglePlayPause();
+                handlePlayPause();
               }}
             >
               <Feather
-                name={isPlaying ? "pause" : "play"}
+                name={isPlaying && isViewingCurrent ? "pause" : "play"}
                 size={32}
                 color="white"
                 className="p-2"
