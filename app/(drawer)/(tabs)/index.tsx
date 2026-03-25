@@ -3,6 +3,7 @@ import { DrawerActions } from "@react-navigation/native";
 import { useNavigation, useRouter } from "expo-router";
 import React from "react";
 import {
+  ActivityIndicator,
   Pressable,
   ScrollView,
   Text,
@@ -11,24 +12,23 @@ import {
   View,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { LOCAL_SONGS } from "../../../constants/SONGS";
 import { useMusic } from "../../../context/musicContext";
 
 const Index = () => {
   const router = useRouter();
   const navigation = useNavigation();
-  const { playSong, tooglePlayPause, player, isPlaying, currentSong } =
-    useMusic();
+  const {
+    isLoading,
+    songs,
+    playSong,
+    tooglePlayPause,
+    player,
+    isPlaying,
+    currentSong,
+  } = useMusic();
   const openDrawer = () => {
     navigation.dispatch(DrawerActions.openDrawer());
   };
-  const songs = [
-    {
-      id: "3",
-      name: "Heal the world",
-      url: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3",
-    },
-  ];
   const playlist = [
     { id: "1", name: "Playlist 1" },
     { id: "2", name: "Playlist 2" },
@@ -60,100 +60,57 @@ const Index = () => {
           <Text className="text-white font-semibold text-2xl mb-2">
             Recently Played
           </Text>
-          {songs.map((item) => {
-            const isCurrent = currentSong?.id === item.id;
-            let displayTime = "00:00";
-            if (isCurrent && player) {
-              const duration = player.duration || 0;
-              const currentTime = player.currentTime || 0;
-              displayTime = isPlaying
-                ? formatTime(duration - currentTime)
-                : formatTime(duration);
-            }
-            return (
-              <TouchableOpacity
-                key={item.id}
-                onPress={() => router.push(`../songs/${item.id}`)}
-                className="bg-whiteview p-2 flex flex-row items-center justify-between rounded border mb-3"
-              >
-                <Text className="text-indi font-semibold text-xl p-2">
-                  {item.name}
-                </Text>
-                <View className="flex-row items-center justify-between mr-2">
-                  <TouchableOpacity
-                    onPress={(e) => {
-                      e.stopPropagation();
-                      if (currentSong?.id === item.id) {
-                        tooglePlayPause();
-                      } else {
-                        playSong(item);
-                      }
-                    }}
-                  >
-                    <Feather
-                      name={
-                        isPlaying && currentSong?.id === item.id
-                          ? "pause"
-                          : "play"
-                      }
-                      size={32}
-                      color="white"
-                    />
-                  </TouchableOpacity>
-                  <Text className=" text-indi font-semibold p-2">
-                    {displayTime}
+          {isLoading ? (
+            <ActivityIndicator size="large" color="#ffffff" />
+          ) : (
+            songs.map((item: any) => {
+              const isCurrent = currentSong?.id === item.id;
+              let displayTime = "00:00";
+              if (isCurrent && player) {
+                const duration = player.duration || 0;
+                const currentTime = player.currentTime || 0;
+                displayTime = isPlaying
+                  ? formatTime(duration - currentTime)
+                  : formatTime(duration);
+              }
+              return (
+                <TouchableOpacity
+                  key={item.id}
+                  onPress={() => router.push(`../songs/${item.id}`)}
+                  className="bg-whiteview p-2 flex flex-row items-center justify-between rounded border mb-3"
+                >
+                  <Text className="text-indi font-semibold text-xl p-2">
+                    {item.name}
                   </Text>
-                </View>
-              </TouchableOpacity>
-            );
-          })}
-          {LOCAL_SONGS.map((item: any) => {
-            const isCurrent = currentSong?.id === item.id;
-            let displayTime = "00:00";
-            if (isCurrent && player) {
-              const duration = player.duration || 0;
-              const currentTime = player.currentTime || 0;
-              displayTime = isPlaying
-                ? formatTime(duration - currentTime)
-                : formatTime(duration);
-            }
-            return (
-              <TouchableOpacity
-                key={item.id}
-                onPress={() => router.push(`../songs/${item.id}`)}
-                className="bg-whiteview p-2 flex flex-row items-center justify-between rounded border mb-3"
-              >
-                <Text className="text-indi font-semibold text-xl p-2">
-                  {item.name}
-                </Text>
-                <View className="flex-row items-center justify-between mr-2">
-                  <TouchableOpacity
-                    onPress={(e) => {
-                      e.stopPropagation();
-                      if (currentSong?.id === item.id) {
-                        tooglePlayPause();
-                      } else {
-                        playSong(item);
-                      }
-                    }}
-                  >
-                    <Feather
-                      name={
-                        isPlaying && currentSong?.id === item.id
-                          ? "pause"
-                          : "play"
-                      }
-                      size={32}
-                      color="white"
-                    />
-                  </TouchableOpacity>
-                  <Text className=" text-indi font-semibold p-2">
-                    {displayTime}
-                  </Text>
-                </View>
-              </TouchableOpacity>
-            );
-          })}
+                  <View className="flex-row items-center justify-between mr-2">
+                    <TouchableOpacity
+                      onPress={(e) => {
+                        e.stopPropagation();
+                        if (currentSong?.id === item.id) {
+                          tooglePlayPause();
+                        } else {
+                          playSong(item);
+                        }
+                      }}
+                    >
+                      <Feather
+                        name={
+                          isPlaying && currentSong?.id === item.id
+                            ? "pause"
+                            : "play"
+                        }
+                        size={32}
+                        color="white"
+                      />
+                    </TouchableOpacity>
+                    <Text className=" text-indi font-semibold p-2">
+                      {displayTime}
+                    </Text>
+                  </View>
+                </TouchableOpacity>
+              );
+            })
+          )}
         </View>
         <Text className="text-white font-semibold text-2xl mb-1 ">
           Based on Recents

@@ -1,14 +1,24 @@
-import { LOCAL_SONGS } from "@/constants/SONGS";
 import { useAudioPlayer, useAudioPlayerStatus } from "expo-audio";
 import { createContext, useContext, useEffect, useState } from "react";
+import songsService from "../app/services/songsService.js";
 
 const MusicContext = createContext();
 export const MusicProvider = ({ children }) => {
+  const [songs, setSongs] = useState([]);
   const [currentSong, setCurrentSong] = useState(null);
   const [playBackMode, setPlayBackMode] = useState("sequential"); // 'repeat', 'shuffle', 'normal'
-
+  const [isLoading, setIsLoading] = useState(true);
   const player = useAudioPlayer();
   const status = useAudioPlayerStatus(player);
+
+  useEffect(() => {
+    const loadSongs = async () => {
+      const data = await songsService.getAllSongs();
+      setSongs(data);
+      setIsLoading(false);
+    };
+    loadSongs();
+  }, []);
 
   const togglePlaybackMode = () => {
     setPlayBackMode((prevMode) => {
@@ -24,14 +34,15 @@ export const MusicProvider = ({ children }) => {
         player.seekTo(0);
         player.play();
       } else if (playBackMode === "shuffle") {
-        const randomIndex = Math.floor(Math.random() * LOCAL_SONGS.length);
-        playSong(LOCAL_SONGS[randomIndex]);
+        const randomIndex = Math.floor(Math.random() * songs.length);
+        playSong(songs[randomIndex]);
       } else {
         playNext();
       }
     }
   }, [status.currentTime, status.duration, playBackMode]);
   const playSong = async (song) => {
+    if (!song) return;
     try {
       const source =
         typeof song.url === "string" ? { uri: song.url } : song.url;
@@ -45,15 +56,16 @@ export const MusicProvider = ({ children }) => {
     }
   };
   const playNext = () => {
-    const currentIndex = LOCAL_SONGS.findIndex((s) => s.id === currentSong.id);
-    const nextIndex = (currentIndex + 1) % LOCAL_SONGS.length;
-    playSong(LOCAL_SONGS[nextIndex]);
+    if (songs.length === 0) return;
+    const currentIndex = songs.findIndex((s) => s.id === currentSong.id);
+    const nextIndex = (currentIndex + 1) % songs.length;
+    playSong(songs[nextIndex]);
   };
   const playPrevious = () => {
-    const currentIndex = LOCAL_SONGS.findIndex((s) => s.id === currentSong.id);
-    const previousIndex =
-      (currentIndex - 1 + LOCAL_SONGS.length) % LOCAL_SONGS.length;
-    playSong(LOCAL_SONGS[previousIndex]);
+    if (songs.length === 0) return;
+    const currentIndex = songs.findIndex((s) => s.id === currentSong.id);
+    const previousIndex = (currentIndex - 1 + songs.length) % songs.length;
+    playSong(songs[previousIndex]);
   };
   const tooglePlayPause = () => {
     if (status.playing) {
@@ -76,6 +88,8 @@ export const MusicProvider = ({ children }) => {
         player,
         togglePlaybackMode,
         playBackMode,
+        songs,
+        isLoading,
       }}
     >
       {children}

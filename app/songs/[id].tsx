@@ -1,4 +1,3 @@
-import { LOCAL_SONGS } from "@/constants/SONGS";
 import { useMusic } from "@/context/musicContext";
 import { Feather } from "@expo/vector-icons";
 import { useLocalSearchParams } from "expo-router";
@@ -10,6 +9,7 @@ const Playback = () => {
 
   const [isLiked, setIsLiked] = useState(false);
   const {
+    songs,
     currentSong,
     playNext,
     playSong,
@@ -21,9 +21,9 @@ const Playback = () => {
     playBackMode,
   } = useMusic();
   const songToShow = useMemo(() => {
-    const availableSongs = [...LOCAL_SONGS];
+    const availableSongs = [...songs];
     return availableSongs.find((song) => song.id === id) || currentSong;
-  }, [id, currentSong]);
+  }, [id, currentSong, songs]);
   if (!songToShow) return <Text>No song found</Text>;
   const isViewingCurrent = currentSong?.id === songToShow.id;
   const duration = player?.duration || 0;
