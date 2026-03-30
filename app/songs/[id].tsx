@@ -1,7 +1,7 @@
 import { useMusic } from "@/context/musicContext";
 import { Feather } from "@expo/vector-icons";
 import { useLocalSearchParams } from "expo-router";
-import { useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import { ScrollView, Text, TouchableOpacity, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 const Playback = () => {
@@ -20,16 +20,18 @@ const Playback = () => {
     togglePlaybackMode,
     playBackMode,
   } = useMusic();
-  const songToShow = useMemo(() => {
-    const availableSongs = [...songs];
-    return availableSongs.find((song) => song.id === id) || currentSong;
-  }, [id, currentSong, songs]);
+  useEffect(() => {
+    if (id && currentSong?.id !== id) {
+      const found = songs.find((song: any) => song.id === id);
+      if (found) playSong(found);
+    }
+  }, [id, songs]);
+
+  const songToShow = currentSong;
   if (!songToShow) return <Text>No song found</Text>;
-  const isViewingCurrent = currentSong?.id === songToShow.id;
   const duration = player?.duration || 0;
   const currentTime = player?.currentTime || 0;
-  const progress =
-    isViewingCurrent && duration > 0 ? (currentTime / duration) * 100 : 0;
+  const progress = duration > 0 ? (currentTime / duration) * 100 : 0;
   const getModeIcon = () => {
     switch (playBackMode) {
       case "repeat":
@@ -41,11 +43,7 @@ const Playback = () => {
     }
   };
   const handlePlayPause = () => {
-    if (isViewingCurrent) {
-      tooglePlayPause();
-    } else {
-      playSong(songToShow);
-    }
+    tooglePlayPause();
   };
 
   return (
@@ -110,7 +108,7 @@ const Playback = () => {
               }}
             >
               <Feather
-                name={isPlaying && isViewingCurrent ? "pause" : "play"}
+                name={isPlaying ? "pause" : "play"}
                 size={32}
                 color="white"
                 className="p-2"
