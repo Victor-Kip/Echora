@@ -2,7 +2,7 @@ import { useMusic } from "@/context/musicContext";
 import { Feather } from "@expo/vector-icons";
 import { useLocalSearchParams } from "expo-router";
 import { useEffect, useState } from "react";
-import { ScrollView, Text, TouchableOpacity, View } from "react-native";
+import { Image, ScrollView, Text, TouchableOpacity, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 const Playback = () => {
   const { id } = useLocalSearchParams();
@@ -66,7 +66,11 @@ const Playback = () => {
         </Text>
         <Text className="text-gray-300 text-lg mb-2">{songToShow?.artist}</Text>
         <View className="w-[100%] h-[250px] bg-white rounded justify-center items-center">
-          <Text className="text-gray-800 text-base">Album Art Placeholder</Text>
+          <Image
+            source={songToShow?.coverImage}
+            className="w-[99%] h-[99%] rounded"
+            resizeMode="cover"
+          />
         </View>
         <View className=" w-full justify-center items-center mt-4">
           <View className="w-full justify-center items-center mt-2">
