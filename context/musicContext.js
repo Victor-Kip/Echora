@@ -74,11 +74,16 @@ export const MusicProvider = ({ children }) => {
       player.play();
     }
   };
+  const stopPlayback = () => {
+    player.pause();
+    setCurrentSong(null);
+  };
 
   return (
     <MusicContext.Provider
       value={{
         currentSong,
+        stopPlayback,
         isPlaying: status.playing,
         playSong,
         tooglePlayPause,

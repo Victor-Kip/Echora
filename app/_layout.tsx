@@ -1,13 +1,15 @@
 import { Stack, useRouter, useSegments } from "expo-router";
 
-import { MusicProvider } from "@/context/musicContext";
+import { MusicProvider, useMusic } from "@/context/musicContext";
 import { useEffect } from "react";
 import { ActivityIndicator, Text, View } from "react-native";
 import AuthProvider, { useAuth } from "../context/auth";
+
 import "./global.css";
 
 const RootLayoutNav = () => {
   const { loading, role } = useAuth();
+  const { stopPlayback } = useMusic();
   const segments = useSegments();
   const router = useRouter();
   console.log(`Current role in layout: ${role}`);
@@ -18,6 +20,7 @@ const RootLayoutNav = () => {
     const isAuthenticated = !!role;
     if (!isAuthenticated && !inAuthGroup) {
       router.replace("/(auth)/userlogin");
+      stopPlayback();
     } else if (isAuthenticated && inAuthGroup) {
       if (role === "artist") {
         router.replace("/(drawer)/(artist)/dashboard");
