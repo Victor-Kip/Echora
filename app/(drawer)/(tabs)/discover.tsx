@@ -1,14 +1,16 @@
 import { Feather } from "@expo/vector-icons";
 import React from "react";
 import {
-    ScrollView,
-    StyleSheet,
-    Text,
-    TouchableOpacity,
-    View,
+  ActivityIndicator,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
 } from "react-native";
 import { Dropdown } from "react-native-element-dropdown";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { useMusic } from "../../../context/musicContext";
 
 const styles = StyleSheet.create({
   dropdown: {
@@ -53,18 +55,16 @@ const options = [
   { label: "Friends", value: "Friends" },
 ];
 
-const songs = [
-  { id: "1", name: "Life on" },
-  { id: "2", name: "Today" },
-  { id: "3", name: "Heal the world" },
-  { id: "4", name: "Midnight Echo" },
-  { id: "5", name: "Urban Rhythm" },
-  { id: "6", name: "Neon Dreams" },
-  { id: "7", name: "Silent Waves" },
-  { id: "8", name: "Golden Hour" },
-  { id: "9", name: "Cloud Chaser" },
-];
 const Discover = () => {
+  const {
+    isLoading,
+    songs,
+    playSong,
+    tooglePlayPause,
+    player,
+    isPlaying,
+    currentSong,
+  } = useMusic();
   return (
     <SafeAreaView className="flex-1 bg-primary ">
       <ScrollView className="px-6 pt-4">
@@ -97,7 +97,11 @@ const Discover = () => {
             placeholder="Based on"
             onChange={(item) => console.log(item)}
           />
-          {songs.map((item) => (
+        </View>
+        {isLoading ? (
+          <ActivityIndicator size="large" color="#ffffff" />
+        ) : (
+          songs.map((item: any) => (
             <View key={item.id}>
               <View className="mt-8 bg-whiteview p-2 flex flex-row items-center justify-between rounded border ">
                 <Text className="text-black font-semibold text-xl p-2">
@@ -111,8 +115,8 @@ const Discover = () => {
                 </View>
               </View>
             </View>
-          ))}
-        </View>
+          ))
+        )}
       </ScrollView>
     </SafeAreaView>
   );

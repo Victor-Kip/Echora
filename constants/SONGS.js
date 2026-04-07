@@ -1,4 +1,5 @@
 export const LOCAL_SONGS = [
+  /*
   {
     id: "local1",
     name: "Old Church Basement",
@@ -19,5 +20,24 @@ export const LOCAL_SONGS = [
     artist: "CityAlight",
     url: require("../assets/music/through_christ_in_me.mp3"),
     coverImage: require("../assets/images/through_christ_in_me.jpg"),
+  },
+  */
+  {
+    id: "local4",
+    name: "System ya Kapungala",
+    artist: "Daddy Owen",
+    url: require("../assets/music/system_ya_kapungala.mp3"),
+  },
+  {
+    id: "local5",
+    name: "Pale Pale",
+    artist: "Size 8",
+    url: require("../assets/music/Pale.mp3"),
+  },
+  {
+    id: "local6",
+    name: "nimependa",
+    artist: "Guardian Angel",
+    url: require("../assets/music/nimependa.mp3"),
   },
 ];
