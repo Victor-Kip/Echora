@@ -12,7 +12,7 @@ const RootLayoutNav = () => {
   const { stopPlayback } = useMusic();
   const segments = useSegments();
   const router = useRouter();
-  console.log(`Current role in layout: ${role}`);
+  //console.log(`Current role in layout: ${role}`);
 
   useEffect(() => {
     if (loading) return;

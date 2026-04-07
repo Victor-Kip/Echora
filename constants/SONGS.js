@@ -27,17 +27,20 @@ export const LOCAL_SONGS = [
     name: "System ya Kapungala",
     artist: "Daddy Owen",
     url: require("../assets/music/system_ya_kapungala.mp3"),
+    duration: "4.51",
   },
   {
     id: "local5",
     name: "Pale Pale",
     artist: "Size 8",
     url: require("../assets/music/Pale.mp3"),
+    duration: "3.34",
   },
   {
     id: "local6",
     name: "nimependa",
     artist: "Guardian Angel",
     url: require("../assets/music/nimependa.mp3"),
+    duration: "4:15",
   },
 ];

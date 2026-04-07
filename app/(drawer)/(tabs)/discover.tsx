@@ -1,4 +1,5 @@
 import { Feather } from "@expo/vector-icons";
+import { useRouter } from "expo-router";
 import React from "react";
 import {
   ActivityIndicator,
@@ -48,17 +49,23 @@ const styles = StyleSheet.create({
   },
 });
 
-const options = [
-  { label: "Genre", value: "Genre" },
-  { label: "Liked Songs", value: "Liked Songs" },
-  { label: "Recently Played", value: "Recently Played" },
-  { label: "Friends", value: "Friends" },
-];
-
 const Discover = () => {
+  const router = useRouter();
+  const formatTime = (seconds: number) => {
+    if (!seconds || isNaN(seconds)) return "00:00";
+    const minutes = Math.floor(seconds / 60);
+    const secondsRemaining = Math.floor(seconds % 60);
+    return `${minutes}:${secondsRemaining < 10 ? "0" : ""}${secondsRemaining}`;
+  };
+  const options = [
+    { label: "Genre", value: "Genre" },
+    { label: "Liked Songs", value: "Liked Songs" },
+    { label: "Recently Played", value: "Recently Played" },
+    { label: "Friends", value: "Friends" },
+  ];
   const {
     isLoading,
-    songs,
+    songs, //
     playSong,
     tooglePlayPause,
     player,
@@ -101,21 +108,34 @@ const Discover = () => {
         {isLoading ? (
           <ActivityIndicator size="large" color="#ffffff" />
         ) : (
-          songs.map((item: any) => (
-            <View key={item.id}>
-              <View className="mt-8 bg-whiteview p-2 flex flex-row items-center justify-between rounded border ">
-                <Text className="text-black font-semibold text-xl p-2">
-                  {item.name}
-                </Text>
-                <View className="flex-row items-center justify-between mr-2">
-                  <TouchableOpacity>
-                    <Feather name="play" size={24} className="p-2" />
-                  </TouchableOpacity>
-                  <Text className="font-semibold p-2">00.00</Text>
+          songs.map((item: any) => {
+            const isCurrent = currentSong?.id === item.id;
+            let displayTime = item.duration;
+            if (isCurrent && player) {
+              const duration = player.duration || 0;
+              const currentTime = player.currentTime || 0;
+              displayTime = isPlaying
+                ? formatTime(duration - currentTime)
+                : formatTime(duration);
+            }
+            return (
+              <TouchableOpacity
+                key={item.id}
+                onPress={() => router.push(`/songs/${item.id}`)}
+              >
+                <View className="mt-8 bg-whiteview p-2 flex flex-row items-center justify-between rounded border ">
+                  <Text className="text-indi font-semibold text-xl p-2">
+                    {item.name}
+                  </Text>
+                  <View className="flex-row items-center justify-between mr-2">
+                    <Text className="font-semibold text-indi text-lg p-2">
+                      {displayTime}
+                    </Text>
+                  </View>
                 </View>
-              </View>
-            </View>
-          ))
+              </TouchableOpacity>
+            );
+          })
         )}
       </ScrollView>
     </SafeAreaView>

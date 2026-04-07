@@ -65,7 +65,7 @@ const Index = () => {
           ) : (
             songs.map((item: any) => {
               const isCurrent = currentSong?.id === item.id;
-              let displayTime = "00:00";
+              let displayTime = item.duration;
               if (isCurrent && player) {
                 const duration = player.duration || 0;
                 const currentTime = player.currentTime || 0;
