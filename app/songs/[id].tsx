@@ -39,7 +39,7 @@ const Playback = () => {
       case "shuffle":
         return "shuffle";
       default:
-        return "music";
+        return "arrow-right";
     }
   };
   const handlePlayPause = () => {

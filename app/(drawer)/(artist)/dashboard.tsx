@@ -32,15 +32,11 @@ const Dashboard = () => {
   const [selectedCoverImage, setSelectedCoverImage] =
     useState<DocumentPicker.DocumentPickerAsset | null>(null);
   const [isUploading, setIsUploading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-  const [successMessage, setSuccessMessage] = useState<string | null>(null);
   const [songName, setSongName] = useState("");
   const [genre, setGenre] = useState("");
 
   const handlePickDocument = async () => {
     setSelectedFile(null);
-    setError(null);
-    setSuccessMessage(null);
 
     try {
       const result = await DocumentPicker.getDocumentAsync({
@@ -53,7 +49,7 @@ const Dashboard = () => {
       }
     } catch (err) {
       console.log("Document pick error:", err);
-      setError("Failed to pick audio file. Please try again.");
+      alert("Failed to pick audio file. Please try again.");
     }
   };
   const handlePickCoverImage = async () => {
@@ -68,20 +64,20 @@ const Dashboard = () => {
       }
     } catch (err) {
       console.log("Cover image pick error:", err);
-      setError("Failed to pick cover image. Please try again.");
+      alert("Failed to pick cover image. Please try again.");
     }
   };
   const handleUpload = async () => {
     if (!selectedFile) {
-      console.log("No file selected");
+      alert("No file selected");
       return;
     }
     if (!songName.trim()) {
-      console.log("Missing song name");
+      alert("Missing song name");
       return;
     }
     if (!genre.trim()) {
-      console.log("Missing genre");
+      alert("Missing genre");
       return;
     }
 
@@ -101,8 +97,6 @@ const Dashboard = () => {
       } as any);
     }
     setIsUploading(true);
-    setError(null);
-    setSuccessMessage(null);
     try {
       const response = await api.post("/audio/new", formData, {
         headers: {
@@ -114,7 +108,7 @@ const Dashboard = () => {
       if (!responseJson.success) {
         throw new Error(responseJson.message || "Upload failed");
       }
-      setSuccessMessage(responseJson.message);
+
       const newSong: SongRecord = {
         id: Date.now().toString(),
         name: songName,
@@ -130,7 +124,6 @@ const Dashboard = () => {
     } catch (err: any) {
       const errorMessage =
         err.response?.data?.message || err.message || "Upload failed";
-      setError(errorMessage);
       alert(`Upload failed: ${errorMessage}`);
     } finally {
       setIsUploading(false);
@@ -165,19 +158,19 @@ const Dashboard = () => {
                 </View>
               )}
             </View>
-            <Text className="text-white text-lg font-semibold mb-2">
+            <Text className="text-white text-xl font-semibold mb-2">
               Song Name
             </Text>
             <TextInput
-              className="bg-gray-100 rounded-xl p-4 mb-6 text-white border border-gray-100"
+              className="bg-gray-100 rounded-xl p-4 mb-6 text-black border  border-blue-300 border-solid border-2"
               placeholder="input song name"
               value={songName}
               onChangeText={setSongName}
               placeholderTextColor="gray-400"
             />
-            <View className="flex-row justify-between mb-8 items-center">
+            <View className="flex-row justify-end mb-8 items-center">
               <View className="flex-1 mr-4">
-                <Text className="text-white font-semibold text-lg mb-2 mt-2 ml-1">
+                <Text className="text-white font-semibold text-xl mb-2 mt-2 ml-1">
                   Genre
                 </Text>
                 <View className="border-2 border-solid  border-blue-300 rounded-xl bg-gray-50 p-2 ">
@@ -190,9 +183,9 @@ const Dashboard = () => {
                   />
                 </View>
               </View>
-              <View className="w-1/3">
-                <Text className="text-white font-semibold mb-3 text-center text-xs">
-                  Upload cover image (optional)
+              <View className="w-1/2 ">
+                <Text className="text-white font-semibold mb-3 text-center text-xl">
+                  Upload cover image
                 </Text>
                 <TouchableOpacity
                   onPress={handlePickCoverImage}
@@ -202,26 +195,26 @@ const Dashboard = () => {
                     {selectedCoverImage ? (
                       <Image
                         source={{ uri: selectedCoverImage.uri }}
-                        style={{ width: 75, height: 75, borderRadius: 10 }}
+                        style={{ width: 100, height: 80, borderRadius: 10 }}
                       ></Image>
                     ) : (
-                      <Feather name="image" size={32} color="gray" />
+                      <Feather name="image" size={48} color="gray" />
                     )}
                   </View>
                 </TouchableOpacity>
               </View>
             </View>
-            <Text className="text-white text-lg font-semibold mb-2">
+            <Text className="text-white text-xl font-semibold mb-2">
               Uploaded songs
             </Text>
             <View className=" mb-6">
               {songs.length === 0 ? (
-                <Text className="text-white">No songs uploaded yet</Text>
+                <Text className="text-gray-200">No songs uploaded yet</Text>
               ) : (
                 songs.map((item) => (
                   <View
                     key={item.id}
-                    className="flex-row justify-around p-3 bg-whiteview border-2 border-blue-300 rounded-xl mb-3 items-center"
+                    className="flex-row justify-between p-3 bg-whiteview border-2 border-blue-300 rounded-xl mb-3 items-center"
                   >
                     <Text className="text-indi text-lg font-semibold">
                       {item.name}
