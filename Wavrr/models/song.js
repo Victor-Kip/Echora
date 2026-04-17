@@ -1,10 +1,5 @@
 import Sequelize from 'sequelize'
 import db from '../config/db.js'
-import User from './user.js'
-import Artist from './artist.js'
-
-
-
 
 const Song = db.define('song', {
     id: {
@@ -17,9 +12,14 @@ const Song = db.define('song', {
     album: Sequelize.INTEGER,
     releaseDate: Sequelize.DATE,
     audioURL: Sequelize.STRING,
+    coverURL: Sequelize.STRING,
+    genre: Sequelize.STRING,
     duration: Sequelize.INTEGER,
+    artistId: Sequelize.INTEGER
+}, {
+    timestamps: true,
+    tableName: 'songs',
+    freezeTableName: true,
 })
-Artist.hasMany(Song)
-Song.belongsTo(Artist)
 
 export default Song
