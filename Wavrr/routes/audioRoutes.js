@@ -1,12 +1,18 @@
-import express from "express"
-import { postAudio } from "../controllers/audioController.js";
+import express from "express";
+import { postAudio, getAllSongs, getSongById, getSongsByArtist } from "../controllers/audioController.js";
 
-const app = express()
 const router = express.Router();
-app.use(express.urlencoded());
 
-
-// full routes are /audio/...
+// POST /api/audio/new - Upload new music
 router.post('/new', postAudio)
+
+// GET /api/audio - Get all songs
+router.get('/', getAllSongs)
+
+// GET /api/audio/artist/:artistId - Get songs by artist (MUST be before /:id)
+router.get('/artist/:artistId', getSongsByArtist)
+
+// GET /api/audio/:id - Get song by ID
+router.get('/:id', getSongById)
 
 export default router
