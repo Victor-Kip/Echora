@@ -52,14 +52,13 @@ export const MusicProvider = ({ children }) => {
       let source;
       if (typeof audioPath === "string") {
         const fullUrl = audioPath.startsWith("/")
-          ? `http://192.168.1.2:5000${audioPath}`
+          ? `http://192.168.1.17:5000${audioPath}`
           : audioPath;
         source = { uri: fullUrl };
       } else {
         source = audioPath;
       }
       setCurrentSong(song);
-      console.log(currentSong.name);
       player.replace(source);
       player.play();
     } catch (error) {
@@ -94,6 +93,7 @@ export const MusicProvider = ({ children }) => {
     <MusicContext.Provider
       value={{
         currentSong,
+        setCurrentSong,
         stopPlayback,
         isPlaying: status.playing,
         playSong,

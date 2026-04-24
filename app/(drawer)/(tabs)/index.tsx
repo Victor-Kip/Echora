@@ -25,6 +25,7 @@ const Index = () => {
     player,
     isPlaying,
     currentSong,
+    setCurrentSong,
   } = useMusic();
   const openDrawer = () => {
     navigation.dispatch(DrawerActions.openDrawer());
@@ -76,7 +77,10 @@ const Index = () => {
               return (
                 <TouchableOpacity
                   key={item.id}
-                  onPress={() => router.push(`../songs/${item.id}`)}
+                  onPress={() => {
+                    setCurrentSong(item);
+                    router.push(`../songs/${item.id}`);
+                  }}
                   className="bg-whiteview p-2 flex flex-row items-center justify-between rounded border mb-3"
                 >
                   <Text className="text-indi font-semibold text-xl p-2">

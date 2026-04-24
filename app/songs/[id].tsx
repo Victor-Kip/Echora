@@ -22,11 +22,12 @@ const Playback = () => {
   } = useMusic();
   useEffect(() => {
     if (id && currentSong?.id !== String(id)) {
-      const found = songs.find((song: any) => song.id === id);
+      const found = songs.find((song: any) => song.id == String(id));
       if (found) playSong(found);
     }
-  }, [id, songs]);
+  }, [id]);
   const songToShow = currentSong;
+
   if (!songToShow) return <Text>No song found</Text>;
   const duration = player?.duration || 0;
   const currentTime = player?.currentTime || 0;
@@ -66,7 +67,7 @@ const Playback = () => {
         <Text className="text-gray-300 text-lg mb-2">{songToShow?.artist}</Text>
         <View className="w-[100%] h-[250px] bg-white rounded justify-center items-center">
           <Image
-            source={songToShow?.coverImage}
+            source={{ uri: `http://192.168.1.17:5000${songToShow?.coverURL}` }}
             className="w-[99%] h-[99%] rounded"
             resizeMode="cover"
           />

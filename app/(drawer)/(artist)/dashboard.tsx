@@ -118,6 +118,9 @@ const Dashboard = () => {
         genre: genre,
         url: selectedFile.uri,
       };
+      console.log(`New song id: ${newSong.id}`);
+      console.log(`Current song id: ${currentSong?.id}`);
+
       setSongs((prevSongs) => [newSong, ...prevSongs]);
       setSelectedFile(null);
       setSelectedCoverImage(null);
@@ -137,7 +140,6 @@ const Dashboard = () => {
       case "dashboard":
         return (
           <View>
-            <View></View>
             <Text className="text-white text-2xl font-bold mb-4">
               Upload audio
             </Text>
@@ -223,11 +225,17 @@ const Dashboard = () => {
                     </Text>
                     <TouchableOpacity
                       className=" p-2 rounded full"
-                      onPress={() => {
+                      onPress={(e) => {
+                        e.stopPropagation();
                         if (currentSong?.id === item.id) {
                           tooglePlayPause();
                         } else {
-                          playSong(item);
+                          try {
+                            playSong(item);
+                          } catch (error) {
+                            console.error("Error playing song:", error);
+                            alert("Failed to play song. Please try again.");
+                          }
                         }
                       }}
                     >
