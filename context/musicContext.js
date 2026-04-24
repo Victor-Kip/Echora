@@ -11,12 +11,12 @@ export const MusicProvider = ({ children }) => {
   const player = useAudioPlayer();
   const status = useAudioPlayerStatus(player);
 
+  const loadSongs = async () => {
+    const data = await songsService.getAllSongs();
+    setSongs(data);
+    setIsLoading(false);
+  };
   useEffect(() => {
-    const loadSongs = async () => {
-      const data = await songsService.getAllSongs();
-      setSongs(data);
-      setIsLoading(false);
-    };
     loadSongs();
   }, []);
 
@@ -43,12 +43,23 @@ export const MusicProvider = ({ children }) => {
   }, [status.currentTime, status.duration, playBackMode]);
   const playSong = async (song) => {
     if (!song) return;
+    const audioPath = song.url || song.audioURL;
+    if (!audioPath) {
+      console.error(`No path found for ${song.name}`);
+      return;
+    }
     try {
-      const source =
-        typeof song.url === "string" ? { uri: song.url } : song.url;
-
+      let source;
+      if (typeof audioPath === "string") {
+        const fullUrl = audioPath.startsWith("/")
+          ? `http://192.168.1.2:5000${audioPath}`
+          : audioPath;
+        source = { uri: fullUrl };
+      } else {
+        source = audioPath;
+      }
       setCurrentSong(song);
-
+      console.log(currentSong.name);
       player.replace(source);
       player.play();
     } catch (error) {
@@ -95,6 +106,7 @@ export const MusicProvider = ({ children }) => {
         playBackMode,
         songs,
         isLoading,
+        refreshSongs: loadSongs,
       }}
     >
       {children}

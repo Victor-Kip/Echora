@@ -15,19 +15,22 @@ process.env.PORT = process.env.PORT || 5000;
 
 const app = express();
 app.use(cookieParser());
-app.use(express.urlencoded({ extended: true }));  // Changed to true
+app.use(express.urlencoded({ extended: true })); // Changed to true
 app.use(express.json());
 
 // Parse multipart form data (Express 5)
-app.use(express.raw({ type: 'multipart/form-data', limit: '100mb' }));
+//app.use(express.raw({ type: 'multipart/form-data', limit: '100mb' }));
 
 // CORS middleware - must come BEFORE routes
 app.use((req, res, next) => {
   res.setHeader("Access-Control-Allow-Origin", "*");
-  res.setHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
+  res.setHeader(
+    "Access-Control-Allow-Methods",
+    "GET, POST, PUT, DELETE, OPTIONS",
+  );
   res.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
   res.setHeader("Access-Control-Allow-Credentials", "true");
-  
+
   // Handle preflight requests
   if (req.method === "OPTIONS") {
     return res.sendStatus(200);
@@ -36,7 +39,7 @@ app.use((req, res, next) => {
 });
 
 // Serve static files from uploads directory
-app.use('/uploads', express.static(path.join(__dirname, '../uploads')));
+app.use("/uploads", express.static(path.join(__dirname, "../uploads")));
 
 app.use("/api/auth", userRoutes);
 app.use("/api/audio/", audioRoutes);
@@ -44,10 +47,10 @@ app.use("/api/audio/", audioRoutes);
 sequelize
   .sync()
   .then((result) => {
-    console.log('Database synced successfully');
+    console.log("Database synced successfully");
   })
   .catch((error) => {
-    console.error('Database sync failed:', error.message);
+    console.error("Database sync failed:", error.message);
   });
 
 // Start the server regardless of DB sync

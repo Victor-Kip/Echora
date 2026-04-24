@@ -6,10 +6,12 @@ const dummySongs = [...LOCAL_SONGS];
 const songsService = {
   getAllSongs: async () => {
     try {
-      //  const response = await api.get("/songs");
-      return response.data;
+      const response = await api.get("/audio");
+      console.log(response.data);
+
+      return response.data.data || [];
     } catch (error) {
-      console.error("API not ready, using dummy songs:");
+      console.error(error);
       return dummySongs;
     }
   },

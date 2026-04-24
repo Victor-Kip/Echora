@@ -16,6 +16,8 @@ import Earnings from "./earnings";
 import Stats from "./stats";
 
 const Dashboard = () => {
+  const { playSong, tooglePlayPause, currentSong, isPlaying, refreshSongs } =
+    useMusic();
   interface SongRecord {
     id: string;
     name: string;
@@ -105,6 +107,7 @@ const Dashboard = () => {
       });
 
       const responseJson = response.data;
+      await refreshSongs();
       if (!responseJson.success) {
         throw new Error(responseJson.message || "Upload failed");
       }
@@ -129,7 +132,6 @@ const Dashboard = () => {
       setIsUploading(false);
     }
   };
-  const { playSong, tooglePlayPause, currentSong, isPlaying } = useMusic();
   const showContent = () => {
     switch (activeTab) {
       case "dashboard":
