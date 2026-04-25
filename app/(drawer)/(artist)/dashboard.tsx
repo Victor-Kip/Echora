@@ -4,6 +4,7 @@ import { Feather } from "@expo/vector-icons";
 import * as DocumentPicker from "expo-document-picker";
 import React, { useState } from "react";
 import {
+  ActivityIndicator,
   Image,
   ScrollView,
   Text,
@@ -34,6 +35,7 @@ const Dashboard = () => {
   const [selectedCoverImage, setSelectedCoverImage] =
     useState<DocumentPicker.DocumentPickerAsset | null>(null);
   const [isUploading, setIsUploading] = useState(false);
+  const [uploadProgress, setUploadProgress] = useState(0);
   const [songName, setSongName] = useState("");
   const [genre, setGenre] = useState("");
 
@@ -99,10 +101,19 @@ const Dashboard = () => {
       } as any);
     }
     setIsUploading(true);
+    setUploadProgress(0);
     try {
       const response = await api.post("/audio/new", formData, {
         headers: {
           "Content-Type": "multipart/form-data",
+        },
+        onUploadProgress: (progressEvent) => {
+          if (progressEvent.total) {
+            const percentCompleted = Math.round(
+              (progressEvent.loaded * 100) / progressEvent.total,
+            );
+            setUploadProgress(percentCompleted);
+          }
         },
       });
 
@@ -133,6 +144,7 @@ const Dashboard = () => {
       alert(`Upload failed: ${errorMessage}`);
     } finally {
       setIsUploading(false);
+      setUploadProgress(0);
     }
   };
   const showContent = () => {
@@ -225,8 +237,7 @@ const Dashboard = () => {
                     </Text>
                     <TouchableOpacity
                       className=" p-2 rounded full"
-                      onPress={(e) => {
-                        e.stopPropagation();
+                      onPress={() => {
                         if (currentSong?.id === item.id) {
                           tooglePlayPause();
                         } else {
@@ -240,11 +251,7 @@ const Dashboard = () => {
                       }}
                     >
                       <Feather
-                        name={
-                          isPlaying && currentSong?.id === item.id
-                            ? "pause"
-                            : "play"
-                        }
+                        name={isPlaying ? "pause" : "play"}
                         color={"white"}
                         size={24}
                       />
@@ -256,11 +263,24 @@ const Dashboard = () => {
             <TouchableOpacity
               onPress={handleUpload}
               disabled={isUploading}
-              className="bg-blue-300 px-6 py-3 rounded-xl items-center  mb-10"
+              className="bg-blue-300 px-6 py-4 rounded-xl items-center  mb-10"
             >
-              <Text className="text-white font-bold text-lg">
-                Publish Track
-              </Text>
+              <View className="flex-row items-center justify-center">
+                {isUploading && (
+                  <ActivityIndicator
+                    size="small"
+                    color="#fff "
+                    className="mr-10"
+                  />
+                )}
+                <Text className="text-white font-bold text-lg">
+                  {isUploading
+                    ? uploadProgress > 0
+                      ? `Uploading ${uploadProgress}%`
+                      : "Uploading..."
+                    : "Publish Track"}
+                </Text>
+              </View>
             </TouchableOpacity>
           </View>
         );
