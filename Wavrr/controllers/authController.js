@@ -127,7 +127,7 @@ export const artistRegister = async (req, res) => {
 
     const token = jwt.sign(
       {
-        id: artist._id,
+        id: artist.id,
         email,
       },
       process.env.JWT_SECRET_KEY,
@@ -167,7 +167,7 @@ export const artistLogin = async (req, res) => {
         .json({ success: false, message: "Invalid password" });
     }
 
-    const token = jwt.sign({ userId: artist._id }, JWT_SECRET, {
+    const token = jwt.sign({ artistId: artist.id }, JWT_SECRET, {
       expiresIn: "2h",
     });
     artist.token = token;
