@@ -1,9 +1,11 @@
 import { useAudioPlayer, useAudioPlayerStatus } from "expo-audio";
 import { createContext, useContext, useEffect, useState } from "react";
 import songsService from "../app/services/songsService.js";
+import { useAuth } from "./auth.js";
 
 const MusicContext = createContext();
 export const MusicProvider = ({ children }) => {
+  const { role } = useAuth();
   const [songs, setSongs] = useState([]);
   const [currentSong, setCurrentSong] = useState(null);
   const [playBackMode, setPlayBackMode] = useState("sequential"); // 'repeat', 'shuffle', 'normal'
@@ -12,13 +14,24 @@ export const MusicProvider = ({ children }) => {
   const status = useAudioPlayerStatus(player);
 
   const loadSongs = async () => {
-    const data = await songsService.getAllSongs();
-    setSongs(data);
-    setIsLoading(false);
+    setIsLoading(true);
+    try {
+      let data;
+      if (role == "artist") {
+        data = await songsService.getSongsByArtist(2);
+      } else {
+        data = await songsService.getAllSongs();
+      }
+      setSongs(data);
+    } catch (error) {
+      console.error("Failed to load songs:", error);
+    } finally {
+      setIsLoading(false);
+    }
   };
   useEffect(() => {
     loadSongs();
-  }, []);
+  }, [role]);
 
   const togglePlaybackMode = () => {
     setPlayBackMode((prevMode) => {
@@ -52,7 +65,7 @@ export const MusicProvider = ({ children }) => {
       let source;
       if (typeof audioPath === "string") {
         const fullUrl = audioPath.startsWith("/")
-          ? `http://192.168.1.6:5000${audioPath}`
+          ? `http://10.26.228.202:5000${audioPath}`
           : audioPath;
         source = { uri: fullUrl };
       } else {

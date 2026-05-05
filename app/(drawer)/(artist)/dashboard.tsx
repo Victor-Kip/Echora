@@ -17,15 +17,14 @@ import Earnings from "./earnings";
 import Stats from "./stats";
 
 const Dashboard = () => {
-  const { playSong, tooglePlayPause, currentSong, isPlaying, refreshSongs } =
-    useMusic();
-  interface SongRecord {
-    id: string;
-    name: string;
-    url: string;
-    genre: string;
-  }
-  const [songs, setSongs] = useState<SongRecord[]>([]);
+  const {
+    playSong,
+    tooglePlayPause,
+    currentSong,
+    isPlaying,
+    refreshSongs,
+    songs,
+  } = useMusic();
 
   const [activeTab, setActiveTab] = useState<
     "dashboard" | "stats" | "earnings"
@@ -122,17 +121,6 @@ const Dashboard = () => {
       if (!responseJson.success) {
         throw new Error(responseJson.message || "Upload failed");
       }
-
-      const newSong: SongRecord = {
-        id: Date.now().toString(),
-        name: songName,
-        genre: genre,
-        url: selectedFile.uri,
-      };
-      console.log(`New song id: ${newSong.id}`);
-      console.log(`Current song id: ${currentSong?.id}`);
-
-      setSongs((prevSongs) => [newSong, ...prevSongs]);
       setSelectedFile(null);
       setSelectedCoverImage(null);
       setSongName("");
@@ -224,10 +212,10 @@ const Dashboard = () => {
               Uploaded songs
             </Text>
             <View className=" mb-6">
-              {songs.length === 0 ? (
+              {!songs ? (
                 <Text className="text-gray-200">No songs uploaded yet</Text>
               ) : (
-                songs.map((item) => (
+                songs.map((item: any) => (
                   <View
                     key={item.id}
                     className="flex-row justify-between p-3 bg-whiteview border-2 border-blue-300 rounded-xl mb-3 items-center"
