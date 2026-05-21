@@ -20,10 +20,10 @@ const namingStrategy = {
 const sequelizeConfig = {
   dialect: "postgres",
   logging: process.env.NODE_ENV === "development" ? console.log : false,
-  // Fix for case-sensitive column names
+  /* Fix for case-sensitive column names
   query: {
     raw: true,
-  },
+  },*/
   // Define naming strategy to prevent automatic uppercasing
   define: {
     underscored: false,

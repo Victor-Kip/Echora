@@ -65,11 +65,13 @@ const Playback = () => {
           {songToShow?.name}
         </Text>
         <Text className="text-gray-300 text-lg mb-2">
-          {songToShow?.artistId}
+          {songToShow?.artist.username || "Unknown Artist"}
         </Text>
         <View className="w-[100%] h-[250px] bg-white rounded justify-center items-center">
           <Image
-            source={{ uri: `http://192.168.1.6:5000${songToShow?.coverURL}` }}
+            source={{
+              uri: `http://10.205.194.202:5000${songToShow?.coverURL}`,
+            }}
             className="w-[99%] h-[99%] rounded"
             resizeMode="cover"
           />

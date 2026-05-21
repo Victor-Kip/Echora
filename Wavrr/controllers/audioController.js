@@ -2,9 +2,9 @@ import dotenv from "dotenv";
 import jwt from "jsonwebtoken";
 import { parseFile } from "music-metadata";
 import path from "path";
-import pg from "pg";
 import { fileURLToPath } from "url";
 import { uploadBoth } from "../middleware/uploadMiddleware.js";
+import Artist from "../models/artist.js";
 import Song from "../models/song.js";
 
 const __filename = fileURLToPath(import.meta.url);
@@ -137,8 +137,14 @@ export const getAllSongs = async (req, res) => {
   try {
     const songs = await Song.findAll({
       order: [["releaseDate", "DESC"]],
+      include: [
+        {
+          model: Artist,
+          as: "artist",
+          attributes: ["username"],
+        },
+      ],
     });
-
     return res.status(200).json({
       success: true,
       data: songs,
@@ -186,7 +192,7 @@ export const getSongsByArtist = async (req, res) => {
     const { artistId } = req.params;
 
     // Use pg directly to bypass Sequelize entirely
-    const { Client } = pg;
+    /*const { Client } = pg;
     const client = new Client({
       connectionString: process.env.DB_URL,
     });
@@ -198,10 +204,14 @@ export const getSongsByArtist = async (req, res) => {
     );
 
     await client.end();
-
+*/
+    const songs = await Song.findAll({
+      where: { artistId: artistId },
+      order: [["releaseDate", "DESC"]],
+    });
     return res.status(200).json({
       success: true,
-      data: result.rows,
+      data: songs,
     });
   } catch (error) {
     console.error("Get artist songs error:", error);
