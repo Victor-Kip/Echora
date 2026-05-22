@@ -1,6 +1,6 @@
-## wavrr
+## Echora
 
-**wavrr** is a music app designed to bring people together through music. Discover new songs, connect with other music lovers, and share your favorite tracks in a vibrant community.
+**Echora** is a music app designed to bring people together through music. Discover new songs, connect with other music lovers, and share your favorite tracks in a vibrant community.
 
 ### Features
 - Discover and play music
@@ -10,7 +10,7 @@
 
 ### Tools
 - **Frontend:** React Native (with Expo)
-- **Backend:** ExpressJS,postgresql, Firebase
+- **Backend:** ExpressJS,postgresql
 
 ### Getting Started
 1. Clone the repository
