@@ -6,7 +6,6 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import api from "../services/api";
 
 const ArtistSignup = () => {
-  const ip_address = process.env.EXPO_PUBLIC_IP_ADDRESS;
   const router = useRouter();
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");

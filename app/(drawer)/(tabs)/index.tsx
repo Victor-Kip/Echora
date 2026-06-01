@@ -27,6 +27,7 @@ const Index = () => {
     currentSong,
     setCurrentSong,
   } = useMusic();
+
   const openDrawer = () => {
     navigation.dispatch(DrawerActions.openDrawer());
   };
@@ -35,12 +36,14 @@ const Index = () => {
     { id: "2", name: "Playlist 2" },
     { id: "3", name: "Playlist 3" },
   ];
+
   const formatTime = (seconds: number) => {
     if (!seconds || isNaN(seconds)) return "00:00";
     const minutes = Math.floor(seconds / 60);
     const secondsRemaining = Math.floor(seconds % 60);
     return `${minutes}:${secondsRemaining < 10 ? "0" : ""}${secondsRemaining}`;
   };
+
   return (
     <SafeAreaView className="flex-1 bg-primary ">
       <ScrollView className="px-6 pt-4">

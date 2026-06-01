@@ -65,7 +65,7 @@ const Discover = () => {
   ];
   const {
     isLoading,
-    songs, //
+    songs,
     playSong,
     tooglePlayPause,
     player,

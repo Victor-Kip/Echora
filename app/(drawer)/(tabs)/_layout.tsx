@@ -87,22 +87,6 @@ const _Layout = () => {
         }}
       />
       <Tabs.Screen
-        name="connect"
-        options={{
-          headerShown: false,
-          tabBarIcon: ({ focused, color }) => (
-            <>
-              <Feather
-                name="message-circle"
-                size={focused ? 28 : 22}
-                color={color}
-                style={{ position: "absolute", top: 2 }}
-              />
-            </>
-          ),
-        }}
-      />
-      <Tabs.Screen
         name="items"
         options={{
           headerShown: false,

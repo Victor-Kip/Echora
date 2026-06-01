@@ -53,6 +53,16 @@ export default function DrawerLayout() {
           ),
         }}
       />
+      <Drawer.Screen
+        name="conn"
+        options={{
+          drawerLabel: "Connect",
+          title: "Connect",
+          drawerIcon: ({ color }) => (
+            <Feather name="message-circle" size={24} color={color} />
+          ),
+        }}
+      />
     </Drawer>
   );
 }

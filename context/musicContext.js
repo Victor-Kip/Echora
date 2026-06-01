@@ -65,7 +65,7 @@ export const MusicProvider = ({ children }) => {
       let source;
       if (typeof audioPath === "string") {
         const fullUrl = audioPath.startsWith("/")
-          ? `http://10.205.194.202:5000${audioPath}`
+          ? `http://192.168.1.43:5000${audioPath}`
           : audioPath;
         source = { uri: fullUrl };
       } else {
