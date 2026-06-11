@@ -2,12 +2,12 @@ import { Feather } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
 import React from "react";
 import {
-  ActivityIndicator,
-  ScrollView,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View,
+    ActivityIndicator,
+    ScrollView,
+    StyleSheet,
+    Text,
+    TouchableOpacity,
+    View,
 } from "react-native";
 import { Dropdown } from "react-native-element-dropdown";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -76,7 +76,7 @@ const Discover = () => {
     <SafeAreaView className="flex-1 bg-primary ">
       <ScrollView className="px-6 pt-4">
         <View className="flex-row items-center justify-between mb-8 mt-2">
-          <Text className="text-white font-bold text-3xl">Wavrr</Text>
+          <Text className="text-white font-bold text-3xl">Echora</Text>
           <View className="flex-row items-center">
             <Text className="text-white font-bold text-2xl">Discover</Text>
             <Feather

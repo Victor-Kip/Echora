@@ -3,13 +3,13 @@ import { DrawerActions } from "@react-navigation/native";
 import { useNavigation, useRouter } from "expo-router";
 import React from "react";
 import {
-  ActivityIndicator,
-  Pressable,
-  ScrollView,
-  Text,
-  TextInput,
-  TouchableOpacity,
-  View,
+    ActivityIndicator,
+    Pressable,
+    ScrollView,
+    Text,
+    TextInput,
+    TouchableOpacity,
+    View,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useMusic } from "../../../context/musicContext";
@@ -49,7 +49,7 @@ const Index = () => {
       <ScrollView className="px-6 pt-4">
         <View className="flex-row items-center justify-between mb-8 mt-2">
           <View>
-            <Text className="text-white font-bold text-3xl">Wavrr</Text>
+            <Text className="text-white font-bold text-3xl">Echora</Text>
             <Pressable onPress={openDrawer}>
               <Feather name="menu" size={24} color="white" />
             </Pressable>

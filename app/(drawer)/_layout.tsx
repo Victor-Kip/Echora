@@ -54,7 +54,7 @@ export default function DrawerLayout() {
         }}
       />
       <Drawer.Screen
-        name="conn"
+        name="connect"
         options={{
           drawerLabel: "Connect",
           title: "Connect",

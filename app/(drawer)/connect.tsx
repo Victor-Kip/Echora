@@ -15,7 +15,7 @@ const Connect = () => {
     <SafeAreaView className="flex-1 bg-primary">
       <ScrollView className="px-6 pt-4">
         <View className="flex-row items-center justify-between mb-6 mt-2">
-          <Text className="text-white font-bold text-3xl">Wavrr</Text>
+          <Text className="text-white font-bold text-3xl">Echora</Text>
           <View className="flex-row items-center">
             <Text className="text-white font-bold text-2xl">Connect</Text>
             <Feather

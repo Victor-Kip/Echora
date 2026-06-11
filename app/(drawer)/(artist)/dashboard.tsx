@@ -4,13 +4,13 @@ import { Feather } from "@expo/vector-icons";
 import * as DocumentPicker from "expo-document-picker";
 import React, { useState } from "react";
 import {
-  ActivityIndicator,
-  Image,
-  ScrollView,
-  Text,
-  TextInput,
-  TouchableOpacity,
-  View,
+    ActivityIndicator,
+    Image,
+    ScrollView,
+    Text,
+    TextInput,
+    TouchableOpacity,
+    View,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import Earnings from "./earnings";
@@ -283,7 +283,7 @@ const Dashboard = () => {
     <SafeAreaView className="flex-1 bg-primary ">
       <ScrollView className="px-6 pt-4">
         <View className="flex-row justify-between items-center mb-6">
-          <Text className="text-3xl font-bold text-white mb-6">Wavrr</Text>
+          <Text className="text-3xl font-bold text-white mb-6">Echora</Text>
           <TouchableOpacity className="">
             <Feather name="bell" size={24} color="white" />
           </TouchableOpacity>

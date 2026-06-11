@@ -2,18 +2,18 @@ import { Feather } from "@expo/vector-icons";
 import { router } from "expo-router";
 import React from "react";
 import {
-  ScrollView,
-  Text,
-  TextInput,
-  TouchableOpacity,
-  View,
+    ScrollView,
+    Text,
+    TextInput,
+    TouchableOpacity,
+    View,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
-const wavrritems = [
-  { id: "1", name: "Wavrr T-Shirt", price: 20 },
-  { id: "2", name: "Wavrr CD", price: 10 },
-  { id: "3", name: "Wavrr Hoodie", price: 40 },
+const echoraItems = [
+  { id: "1", name: "Echora T-Shirt", price: 20 },
+  { id: "2", name: "Echora CD", price: 10 },
+  { id: "3", name: "Echora Hoodie", price: 40 },
 ];
 
 const Items = () => {
@@ -21,7 +21,7 @@ const Items = () => {
     <SafeAreaView className="flex-1 bg-primary ">
       <ScrollView className="p-6 pt-4">
         <View className="flex-row justify-between items-center mb-6 mt-2">
-          <Text className="text-white font-bold text-3xl">Wavrr</Text>
+          <Text className="text-white font-bold text-3xl">Echora</Text>
           <View className="flex-row items-center">
             <Text className="text-2xl text-white font-bold">Items</Text>
             <Feather
@@ -53,7 +53,7 @@ const Items = () => {
           Based on artists you follow
         </Text>
 
-        {wavrritems.map((item) => (
+        {echoraItems.map((item) => (
           <View key={item.id}>
             <View className="border-t border-gray-200 my-2 mb-6" />
             <TouchableOpacity

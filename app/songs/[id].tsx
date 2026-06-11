@@ -50,7 +50,7 @@ const Playback = () => {
     <SafeAreaView className="flex-1 bg-primary">
       <ScrollView className="px-6 pt-4">
         <View className="flex-row items-center justify-between mb-8 mt-2">
-          <Text className="text-white font-bold text-3xl">Wavrr</Text>
+          <Text className="text-white font-bold text-3xl">Echora</Text>
           <View className="flex-row items-center">
             <Text className="text-white font-bold text-2xl">Playback</Text>
             <Feather
@@ -70,7 +70,7 @@ const Playback = () => {
         <View className="w-[100%] h-[250px] bg-white rounded justify-center items-center">
           <Image
             source={{
-              uri: `http://192.168.1.43:5000${songToShow?.coverURL}`,
+              uri: `http://10.20.25.202:5000${songToShow?.coverURL}`,
             }}
             className="w-[99%] h-[99%] rounded"
             resizeMode="cover"
