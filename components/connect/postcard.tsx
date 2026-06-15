@@ -1,0 +1,77 @@
+import { Feather } from "@expo/vector-icons";
+import { Text, TouchableOpacity, View } from "react-native";
+const PostCard = ({ post }: { post: any }) => {
+  const { author, content, post_type, poll_options } = post;
+  const options = Array.isArray(poll_options)
+    ? poll_options
+    : Array.isArray(poll_options?.options)
+      ? poll_options.options
+      : [];
+  const percentages = Array.isArray(post?.percentages)
+    ? post.percentages
+    : Array.isArray(poll_options?.percentages)
+      ? poll_options.percentages
+      : [];
+  return (
+    <View className="w-full bg-white rounded-xl mb-6 p-4 pt-12 pb-14 relative min-h-[180px0">
+      <View className="absolute top-3 left-4 flex-row items-center">
+        <Text className="font-bold text-gray-900 text-lg mr-1">
+          {author.username}
+        </Text>
+
+        {author.role === "artist" && (
+          <View className="bg-indigo-900 rounded-full p-0.5 items-center justify-center">
+            <Feather name="check" size={12} color="white" />
+          </View>
+        )}
+      </View>
+      <View className="w-full justify-center py-2">
+        <Text className="text-xl font-semibold text-gray-800 mb-3">
+          {content}
+        </Text>
+        {post_type === "poll" && options.length > 0 && (
+          <View className="w-full space-y-2 mt-1">
+            {options.map((option: string, idx: number) => {
+              const percentage = Number(percentages[idx] ?? 0);
+              return (
+                <View
+                  key={idx}
+                  className="w-full bg-gray-100 rounded-lg overflow-hidden h-10 justify-center relative mb-2"
+                >
+                  <View
+                    style={{ width: `${percentage}%` }}
+                    className={`absolute top-0 bottom-0 left-0 ${idx === 0 ? "bg-green-600" : "bg-red-700"}`}
+                  />
+                  <View className="flex-row justify-between px-3 z-10 w-full items-center">
+                    <Text className="text-white font-medium">{option}</Text>
+                    <Text className="text-white font-bold">{percentage}%</Text>
+                  </View>
+                </View>
+              );
+            })}
+          </View>
+        )}
+      </View>
+      <View className="w-full absolute bottom-2 left-4 right-4 flex-row justify-around border-t border-gray-100 pt-2">
+        <TouchableOpacity className="flex-row items-center py-1 px-2">
+          <Feather name="heart" size={16} color="red" className="mr-1.5" />
+          <Text className="font-semibold text-gray-600">Like</Text>
+        </TouchableOpacity>
+        <TouchableOpacity className="flex-row items-center py-1 px-2">
+          <Feather
+            name="message-square"
+            size={16}
+            color="red"
+            className="mr-1.5"
+          />
+          <Text className="font-semibold text-gray-600">Comment</Text>
+        </TouchableOpacity>
+        <TouchableOpacity className="flex-row items-center py-1 px-2">
+          <Feather name="share-2" size={16} color="red" className="mr-1.5" />
+          <Text className="font-semibold text-gray-600">Share</Text>
+        </TouchableOpacity>
+      </View>
+    </View>
+  );
+};
+export default PostCard;
