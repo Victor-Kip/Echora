@@ -70,7 +70,7 @@ const Playback = () => {
         <View className="w-[100%] h-[250px] bg-white rounded justify-center items-center">
           <Image
             source={{
-              uri: `http://10.20.25.202:5000${songToShow?.coverURL}`,
+              uri: `http://192.168.1.15:5000${songToShow?.coverURL}`,
             }}
             className="w-[99%] h-[99%] rounded"
             resizeMode="cover"

@@ -1,3 +1,4 @@
+import CreatePostModal from "@/components/connect/createPostModal";
 import PostCard from "@/components/connect/postcard";
 import { Feather } from "@expo/vector-icons";
 import { router } from "expo-router";
@@ -32,6 +33,12 @@ const MOCK_POSTS = [
 const Connect = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [activeFilter, setActiveFilter] = useState("For You");
+  const [isCreatePostVisible, setIsCreatePostVisible] = useState(false);
+
+  const handleCreatePost = () => {
+    setIsCreatePostVisible(false);
+  };
+
   return (
     <SafeAreaView className="flex-1 bg-primary">
       <FlatList
@@ -68,6 +75,12 @@ const Connect = () => {
             <View className="flex-row items-center justify-between mb-6 ">
               <View className="flex-row items-center">
                 <TouchableOpacity
+                  onPress={() => setIsCreatePostVisible(true)}
+                  className="mr-2 p-3 rounded-lg bg-blue-500"
+                >
+                  <Text className="text-white font-semibold">Create Post</Text>
+                </TouchableOpacity>
+                <TouchableOpacity
                   onPress={() => setActiveFilter("Following")}
                   className={`mr-2 p-3 rounded-lg ${activeFilter == "Following" ? "bg-blue-500" : "bg-gray-200"}`}
                 >
@@ -99,6 +112,11 @@ const Connect = () => {
             </View>
           </>
         }
+      />
+      <CreatePostModal
+        visible={isCreatePostVisible}
+        onClose={() => setIsCreatePostVisible(false)}
+        onSubmit={handleCreatePost}
       />
     </SafeAreaView>
   );
