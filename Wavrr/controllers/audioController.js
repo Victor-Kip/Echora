@@ -2,15 +2,28 @@ import dotenv from "dotenv";
 import jwt from "jsonwebtoken";
 import { parseFile } from "music-metadata";
 import path from "path";
+import fs from "fs/promises";
 import { fileURLToPath } from "url";
 import { uploadBoth } from "../middleware/uploadMiddleware.js";
 import Artist from "../models/artist.js";
 import Song from "../models/song.js";
+import Post from "../models/post.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 dotenv.config();
+
+const getArtistIdFromToken = (req) => {
+  const token = req.headers.authorization?.split(" ")[1];
+  if (!token) return null;
+  try {
+    const decoded = jwt.verify(token, process.env.JWT_SECRET_KEY);
+    return decoded.artistId || decoded.id || decoded.userId;
+  } catch (err) {
+    return null;
+  }
+};
 
 export const postAudio = async (req, res) => {
   console.log("Upload request received");
@@ -84,29 +97,40 @@ export const postAudio = async (req, res) => {
       }
 
       // Get artist ID from token if available
-      let artistId = null;
-      const token = req.headers.authorization?.split(" ")[1];
-      if (token) {
-        try {
-          const decoded = jwt.verify(token, process.env.JWT_SECRET_KEY);
-          if (decoded.artistId) {
-            artistId = decoded.artistId;
-          }
-        } catch (err) {
-          console.log("Token verification failed:", err.message);
-        }
+      const artistId = getArtistIdFromToken(req);
+
+      // CRITICAL: If artistId is still null, we cannot proceed because the DB requires it
+      if (!artistId) {
+        return res.status(401).json({
+          success: false,
+          message: "You must be logged in as an artist to upload music",
+        });
       }
 
       // Create song record in database
       const newSong = await Song.create({
         name: songName.trim(),
-        audioURL: audioUrl,
-        coverURL: coverUrl,
+        audio_url: audioUrl,
+        cover_url: coverUrl,
         genre: genre.trim(),
         duration: duration,
-        releaseDate: new Date(),
-        artistId: artistId,
+        release_date: new Date(),
+        artist_id: artistId,
       });
+
+      // AUTO-POST: Create a post automatically when a new song is uploaded
+      try {
+        await Post.create({
+          type: 'announcement',
+          content: `🚀 New release! Check out my new song "${songName.trim()}" now available on Echora!`,
+          media_url: coverUrl,
+          authorId: artistId,
+          authorType: 'artist'
+        });
+      } catch (postError) {
+        console.error("Auto-post creation failed:", postError);
+        // We don't fail the whole upload if the auto-post fails
+      }
 
       return res.status(201).json({
         success: true,
@@ -136,7 +160,7 @@ export const postAudio = async (req, res) => {
 export const getAllSongs = async (req, res) => {
   try {
     const songs = await Song.findAll({
-      order: [["releaseDate", "DESC"]],
+      order: [["release_date", "DESC"]],
       include: [
         {
           model: Artist,
@@ -145,9 +169,20 @@ export const getAllSongs = async (req, res) => {
         },
       ],
     });
+    
+    const formattedSongs = songs.map(song => {
+      const s = song.get();
+      return {
+        ...s,
+        audioURL: s.audio_url,
+        coverURL: s.cover_url,
+        releaseDate: s.release_date,
+      };
+    });
+
     return res.status(200).json({
       success: true,
-      data: songs,
+      data: formattedSongs,
     });
   } catch (error) {
     console.error("Get songs error:", error);
@@ -172,9 +207,17 @@ export const getSongById = async (req, res) => {
       });
     }
 
+    const s = song.get();
+    const formattedSong = {
+      ...s,
+      audioURL: s.audio_url,
+      coverURL: s.cover_url,
+      releaseDate: s.release_date,
+    };
+
     return res.status(200).json({
       success: true,
-      data: song,
+      data: formattedSong,
     });
   } catch (error) {
     console.error("Get song error:", error);
@@ -191,27 +234,24 @@ export const getSongsByArtist = async (req, res) => {
   try {
     const { artistId } = req.params;
 
-    // Use pg directly to bypass Sequelize entirely
-    /*const { Client } = pg;
-    const client = new Client({
-      connectionString: process.env.DB_URL,
-    });
-    await client.connect();
-
-    const result = await client.query(
-      `SELECT id, name, album, "releaseDate", "audioURL", "coverURL", genre, duration, "createdAt", "updatedAt", "artistId" FROM songs WHERE "artistId" = $1 ORDER BY "releaseDate" DESC`,
-      [artistId],
-    );
-
-    await client.end();
-*/
     const songs = await Song.findAll({
-      where: { artistId: artistId },
-      order: [["releaseDate", "DESC"]],
+      where: { artist_id: artistId },
+      order: [["release_date", "DESC"]],
     });
+
+    const formattedSongs = songs.map(song => {
+      const s = song.get();
+      return {
+        ...s,
+        audioURL: s.audio_url,
+        coverURL: s.cover_url,
+        releaseDate: s.release_date,
+      };
+    });
+
     return res.status(200).json({
       success: true,
-      data: songs,
+      data: formattedSongs,
     });
   } catch (error) {
     console.error("Get artist songs error:", error);
@@ -220,5 +260,57 @@ export const getSongsByArtist = async (req, res) => {
       message: "Failed to fetch artist songs",
       error: error.message,
     });
+  }
+};
+
+export const updateSong = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const artistId = getArtistIdFromToken(req);
+
+    if (!artistId) return res.status(401).json({ success: false, message: "Authentication required" });
+
+    const song = await Song.findByPk(id);
+    if (!song) return res.status(404).json({ success: false, message: "Song not found" });
+
+    if (song.artist_id !== artistId) {
+      return res.status(403).json({ success: false, message: "You do not have permission to update this song" });
+    }
+
+    const updates = req.body;
+    delete updates.artist_id; 
+
+    await song.update(updates);
+
+    return res.status(200).json({ success: true, message: "Song updated successfully", data: song });
+  } catch (error) {
+    return res.status(500).json({ success: false, message: "Failed to update song", error: error.message });
+  }
+};
+
+export const deleteSong = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const artistId = getArtistIdFromToken(req);
+
+    if (!artistId) return res.status(401).json({ success: false, message: "Authentication required" });
+
+    const song = await Song.findByPk(id);
+    if (!song) return res.status(404).json({ success: false, message: "Song not found" });
+
+    if (song.artist_id !== artistId) {
+      return res.status(403).json({ success: false, message: "You do not have permission to delete this song" });
+    }
+
+    try {
+      if (song.audio_url) await fs.unlink(path.join(__dirname, '..', song.audio_url)).catch(() => {});
+      if (song.cover_url) await fs.unlink(path.join(__dirname, '..', song.cover_url)).catch(() => {});
+    } catch (e) {}
+
+    await song.destroy();
+
+    return res.status(200).json({ success: true, message: "Song deleted successfully" });
+  } catch (error) {
+    return res.status(500).json({ success: false, message: "Failed to delete song", error: error.message });
   }
 };

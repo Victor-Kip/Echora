@@ -1,16 +1,16 @@
 const User = require('../models/user')
+const jwt = require('jsonwebtoken');
 
-
-
-exports.getUser = (req, res, next) => {
+exports.getUserAll = (req, res, next) => {
     User.findAll()
         .then(users => {
             res.status(200).json({ users: users });
         })
-        .catch(err => console.log(err));
+        .catch(err => {
+            console.log(err);
+            res.status(500).json({ message: "Failed to fetch users" });
+        });
 }
-
-
 
 exports.getUser = (req, res, next) => {
     const userId = req.params.userId;
@@ -21,9 +21,11 @@ exports.getUser = (req, res, next) => {
             }
             res.status(200).json({ user: user });
         })
-        .catch(err => console.log(err));
+        .catch(err => {
+            console.log(err);
+            res.status(500).json({ message: "Error fetching user" });
+        });
 }
-
 
 exports.createUser = (req, res, next) => {
     const name = req.body.name;
@@ -34,54 +36,81 @@ exports.createUser = (req, res, next) => {
     })
         .then(result => {
             console.log('Created User');
-            res.status(201).josn({
+            res.status(201).json({
                 message: "User created successfully",
                 user : result
             })
         })
         .catch(err => {
-            console.log(err)
+            console.log(err);
+            res.status(500).json({ message: "Failed to create user" });
         })
 }
-
 
 exports.updateUser = (req, res, next) => {
-    const userId = req.params.userId
-    const updatedName = req.body.name
+    const userId = req.params.userId;
+    const updatedName = req.body.name;
     const updatedEmail = req.body.email;
-    User.findByPk(userId)
-        .then(user => {
-            if (!user) {
-                return res.status(404).json({ message: 'User not found'})
-            }
-            user.name = updatedName
-            user.email = updatedEmail
-            return user.save()
-        })
-        .then(result => {
-            res.status(200).json({message: "user Updater", user: result})
-        })
-        .catch(err => console.log(err))
+    
+    // Authorization check
+    const token = req.headers.authorization?.split(" ")[1];
+    if (!token) return res.status(401).json({ message: "Authentication required" });
 
-}
+    jwt.verify(token, process.env.JWT_SECRET_KEY, (err, decoded) => {
+        if (err || (decoded.id !== userId && decoded.userId !== userId)) {
+            return res.status(403).json({ message: "You can only update your own profile" });
+        }
 
-
-
-exports.deleteUser = (req,res,next) => {
-    const userId = req.params.userId
-    User.findByPk(userId)
-        .then(user => {
-            if (!user) {
-                return res.status(404).json({message: " User not found "})
-            }
-            return User.destroy({
-                where: {
-                    id: userId
+        User.findByPk(userId)
+            .then(user => {
+                if (!user) {
+                    return res.status(404).json({ message: 'User not found'});
+                }
+                user.name = updatedName || user.name;
+                user.email = updatedEmail || user.email;
+                return user.save();
+            })
+            .then(result => {
+                if (result) {
+                    res.status(200).json({message: "User Updated", user: result});
                 }
             })
-        })
-        .then(result => {
-            res.status(200).json({ message: "User deleted"})
-        })
-        .catch(err => console.log(err))
+            .catch(err => {
+                console.log(err);
+                res.status(500).json({ message: "Update failed" });
+            });
+    });
+}
+
+exports.deleteUser = (req,res,next) => {
+    const userId = req.params.userId;
+    
+    // Authorization check
+    const token = req.headers.authorization?.split(" ")[1];
+    if (!token) return res.status(401).json({ message: "Authentication required" });
+
+    jwt.verify(token, process.env.JWT_SECRET_KEY, (err, decoded) => {
+        if (err || (decoded.id !== userId && decoded.userId !== userId)) {
+            return res.status(403).json({ message: "You can only delete your own account" });
+        }
+
+        User.findByPk(userId)
+            .then(user => {
+                if (!user) {
+                    return res.status(404).json({message: " User not found "})
+                }
+                return User.destroy({
+                    where: {
+                        id: userId
+                    }
+                })
+            })
+            .then(result => {
+                res.status(200).json({ message: "User deleted"})
+            })
+            .catch(err => {
+                console.log(err);
+                res.status(500).json({ message: "Deletion failed" });
+            })
+    });
 }

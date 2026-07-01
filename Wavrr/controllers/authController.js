@@ -35,7 +35,7 @@ export const userRegister = async (req, res) => {
 
     const token = jwt.sign(
       {
-        id: user._id,
+        id: user.id,
         email,
       },
       process.env.JWT_SECRET_KEY,
@@ -75,7 +75,7 @@ export const userLogin = async (req, res) => {
         .json({ success: false, message: "Invalid password" });
     }
 
-    const token = jwt.sign({ userId: user._id }, JWT_SECRET, {
+    const token = jwt.sign({ userId: user.id }, JWT_SECRET, {
       expiresIn: "2h",
     });
     user.token = token;
