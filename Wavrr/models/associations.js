@@ -1,0 +1,87 @@
+import User from './user.js';
+import Artist from './artist.js';
+import Song from './song.js';
+import Post from './post.js';
+import Follow from './follow.js';
+import Album from './album.js';
+import Comment from './comment.js';
+import Like from './like.js';
+import Playlist from './playlist.js';
+import PlaylistSong from './playlistSong.js';
+import Merchandise from './merchandise.js';
+import Order from './order.js';
+import OrderItem from './orderItem.js';
+
+// --- CORE FAVORITES ---
+User.belongsTo(Song, { foreignKey: 'favorite_song_id', as: 'favoriteSong' });
+Artist.belongsTo(Song, { foreignKey: 'favorite_song_id', as: 'favoriteSong' });
+
+// --- MUSIC RELATIONSHIPS ---
+Artist.hasMany(Album, { foreignKey: 'artist_id' });
+Album.belongsTo(Artist, { foreignKey: 'artist_id' });
+
+Artist.hasMany(Song, { foreignKey: 'artist_id' });
+Song.belongsTo(Artist, { foreignKey: 'artist_id', as: 'artist' });
+
+Album.hasMany(Song, { foreignKey: 'album_id' });
+Song.belongsTo(Album, { foreignKey: 'album_id' });
+
+// --- SOCIAL FEED (Post Polymorphism) ---
+User.hasMany(Post, {
+    foreignKey: 'authorId',
+    constraints: false,
+    scope: { authorType: 'user' }
+});
+Artist.hasMany(Post, {
+    foreignKey: 'authorId',
+    constraints: false,
+    scope: { authorType: 'artist' }
+});
+
+Post.belongsTo(User, { 
+    foreignKey: 'authorId', 
+    constraints: false, 
+    as: 'userAuthor' 
+});
+Post.belongsTo(Artist, { 
+    foreignKey: 'authorId', 
+    constraints: false, 
+    as: 'artistAuthor' 
+});
+
+// --- COMMENTS & LIKES ---
+Post.hasMany(Comment, { foreignKey: 'post_id' });
+Comment.belongsTo(Post, { foreignKey: 'post_id' });
+User.hasMany(Comment, { foreignKey: 'user_id' });
+Comment.belongsTo(User, { foreignKey: 'user_id' });
+
+User.hasMany(Like, { foreignKey: 'user_id' });
+Like.belongsTo(User, { foreignKey: 'user_id' });
+
+// --- FOLLOW SYSTEM ---
+User.hasMany(Follow, { foreignKey: 'follower_id' });
+Follow.belongsTo(User, { foreignKey: 'follower_id' });
+// Following can be User or Artist (Handled by following_type in the model)
+
+// --- PLAYLISTS ---
+User.hasMany(Playlist, { foreignKey: 'user_id' });
+Playlist.belongsTo(User, { foreignKey: 'user_id' });
+
+Playlist.hasMany(PlaylistSong, { foreignKey: 'playlist_id' });
+PlaylistSong.belongsTo(Playlist, { foreignKey: 'playlist_id' });
+
+Song.hasMany(PlaylistSong, { foreignKey: 'song_id' });
+PlaylistSong.belongsTo(Song, { foreignKey: 'song_id' });
+
+// --- COMMERCE (MERCH & ORDERS) ---
+Artist.hasMany(Merchandise, { foreignKey: 'artist_id' });
+Merchandise.belongsTo(Artist, { foreignKey: 'artist_id' });
+
+User.hasMany(Order, { foreignKey: 'user_id' });
+Order.belongsTo(User, { foreignKey: 'user_id' });
+
+Order.hasMany(OrderItem, { foreignKey: 'order_id' });
+OrderItem.belongsTo(Order, { foreignKey: 'order_id' });
+
+Merchandise.hasMany(OrderItem, { foreignKey: 'merch_id' });
+OrderItem.belongsTo(Merchandise, { foreignKey: 'merch_id' });

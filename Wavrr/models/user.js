@@ -9,10 +9,22 @@ const User = db.define('user', {
         allowNull: false,
         primaryKey: true
     },
-    username: Sequelize.STRING,
-    email: Sequelize.STRING,
-    password: Sequelize.STRING,
+    username: { type: Sequelize.STRING, unique: true, allowNull: false },
+    email: { type: Sequelize.STRING, unique: true, allowNull: false },
+    password: { type: Sequelize.STRING, allowNull: false },
+    profile_picture_url: Sequelize.STRING,
+    bio: Sequelize.TEXT,
+    favorite_song_id: { type: Sequelize.INTEGER, allowNull: true },
+    following: { type: Sequelize.JSONB, defaultValue: [] },
+    followers_count: { type: Sequelize.INTEGER, defaultValue: 0 },
+    following_count: { type: Sequelize.INTEGER, defaultValue: 0 },
+    is_verified: { type: Sequelize.BOOLEAN, defaultValue: false },
+    role: { 
+        type: Sequelize.ENUM('user', 'artist', 'admin'), 
+        defaultValue: 'user' 
+    },
     token: Sequelize.STRING,
+    is_active: { type: Sequelize.BOOLEAN, defaultValue: true },
 })
 
 

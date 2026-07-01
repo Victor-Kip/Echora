@@ -10,14 +10,15 @@ const Song = db.define(
       allowNull: false,
       primaryKey: true,
     },
-    name: Sequelize.STRING,
-    album: Sequelize.INTEGER,
-    releaseDate: Sequelize.DATE,
-    audioURL: Sequelize.STRING,
-    coverURL: Sequelize.STRING,
+    name: { type: Sequelize.STRING, allowNull: false },
+    album_id: { type: Sequelize.INTEGER, allowNull: true },
+    release_date: Sequelize.DATEONLY,
+    audio_url: Sequelize.STRING,
+    cover_url: Sequelize.STRING,
     genre: Sequelize.STRING,
     duration: Sequelize.INTEGER,
-    artistId: Sequelize.INTEGER,
+    artist_id: { type: Sequelize.INTEGER, allowNull: false },
+    play_count: { type: Sequelize.INTEGER, defaultValue: 0 },
   },
   {
     timestamps: true,
@@ -25,10 +26,5 @@ const Song = db.define(
     freezeTableName: true,
   },
 );
-
-import Artist from "./artist.js";
-
-Song.belongsTo(Artist, { foreignKey: "artistId", as: "artist" });
-Artist.hasMany(Song, { foreignKey: "artistId" });
 
 export default Song;

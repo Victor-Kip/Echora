@@ -15,6 +15,10 @@ const Artist = db.define('artist', {
     genre: Sequelize.STRING,
     bio: Sequelize.TEXT,
     token: Sequelize.STRING,
+    favoriteSongId: {
+        type: Sequelize.INTEGER,
+        allowNull: true
+    },
 })
 
 
