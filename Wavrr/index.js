@@ -4,8 +4,24 @@ import express from "express";
 import path from "path";
 import { fileURLToPath } from "url";
 import sequelize from "./config/db.js";
+import "./models/user.js";
+import "./models/artist.js";
+import "./models/song.js";
+import "./models/post.js";
+import "./models/follow.js";
+import "./models/album.js";
+import "./models/comment.js";
+import "./models/like.js";
+import "./models/playlist.js";
+import "./models/playlistSong.js";
+import "./models/merchandise.js";
+import "./models/order.js";
+import "./models/orderItem.js";
+import "./models/associations.js";
 import audioRoutes from "./routes/audioRoutes.js";
 import userRoutes from "./routes/authRoutes.js";
+import postRoutes from "./routes/postRoutes.js";
+import profileRoutes from "./routes/userRoutes.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -43,6 +59,8 @@ app.use("/uploads", express.static(path.join(__dirname, "../uploads")));
 
 app.use("/api/auth", userRoutes);
 app.use("/api/audio/", audioRoutes);
+app.use("/api/posts", postRoutes);
+app.use("/api/users", profileRoutes);
 
 sequelize
   .sync()
