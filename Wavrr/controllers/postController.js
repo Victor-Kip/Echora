@@ -1,0 +1,156 @@
+import jwt from "jsonwebtoken";
+import Post from "../models/post.js";
+import User from "../models/user.js";
+import Artist from "../models/artist.js";
+import dotenv from "dotenv";
+
+dotenv.config();
+const JWT_SECRET = process.env.JWT_SECRET_KEY;
+
+export const votePoll = async (req, res) => {
+  try {
+    const { postId, optionIndex } = req.body;
+    const token = req.headers.authorization?.split(" ")[1];
+
+    if (!token) return res.status(401).json({ success: false, message: "Unauthorized" });
+
+    const decoded = jwt.verify(token, JWT_SECRET);
+    const userId = decoded.userId || decoded.id || decoded.artistId;
+
+    const post = await Post.findByPk(postId);
+    if (!post) return res.status(404).json({ success: false, message: "Post not found" });
+    if (post.type !== 'poll') return res.status(400).json({ success: false, message: "This post is not a poll" });
+
+    let votes = post.poll_votes || {};
+    
+    // Simple voting: track votes per option. 
+    // In a real app, we would store WHICH user voted for WHICH option to prevent double voting.
+    const currentVotes = votes[optionIndex] || 0;
+    votes[optionIndex] = currentVotes + 1;
+
+    await post.update({ poll_votes: votes });
+
+    return res.status(200).json({ success: true, message: "Vote cast successfully", data: post });
+  } catch (error) {
+    return res.status(500).json({ success: false, message: "Internal server error" });
+  }
+};
+
+export const createPost = async (req, res) => {
+  try {
+    const { type, content, mediaUrl, pollOptions } = req.body;
+    const token = req.headers.authorization?.split(" ")[1];
+
+    if (!token) {
+      return res.status(401).json({ success: false, message: "Unauthorized" });
+    }
+
+    const decoded = jwt.verify(token, JWT_SECRET);
+    
+    // Determine author identity
+    // The token might have userId (from userLogin) or artistId (from artistLogin)
+    let authorId = decoded.userId || decoded.id || decoded.artistId;
+    let authorType = decoded.artistId ? 'artist' : 'user';
+
+    if (!authorId) {
+      return res.status(401).json({ success: false, message: "Invalid token payload" });
+    }
+
+    if (!content && !pollOptions) {
+      return res.status(400).json({ success: false, message: "Content or poll options are required" });
+    }
+
+    const post = await Post.create({
+      type: type || 'text',
+      content: content || "",
+      media_url: mediaUrl || null,
+      poll_options: pollOptions ? JSON.stringify(pollOptions) : null,
+      authorId,
+      authorType
+    });
+
+    return res.status(201).json({
+      success: true,
+      message: "Post created successfully",
+      data: post
+    });
+  } catch (error) {
+    console.error("Create post error:", error);
+    return res.status(500).json({ success: false, message: "Internal server error", error: error.message });
+  }
+};
+
+export const getFeed = async (req, res) => {
+  try {
+    // Simple feed: get all posts ordered by creation date
+    // In a real app, we'd filter by followed users
+    const posts = await Post.findAll({
+      order: [['createdAt', 'DESC']],
+      include: [
+        { model: User, as: 'userAuthor', attributes: ['username', 'email'] },
+        { model: Artist, as: 'artistAuthor', attributes: ['username', 'genre', 'bio'] }
+      ]
+    });
+
+    return res.status(200).json({
+      success: true,
+      data: posts
+    });
+  } catch (error) {
+    console.error("Get feed error:", error);
+    return res.status(500).json({ success: false, message: "Internal server error" });
+  }
+};
+
+export const updatePost = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { content, pollOptions } = req.body;
+    const token = req.headers.authorization?.split(" ")[1];
+
+    if (!token) return res.status(401).json({ success: false, message: "Unauthorized" });
+
+    const decoded = jwt.verify(token, JWT_SECRET);
+    const authorId = decoded.userId || decoded.id || decoded.artistId;
+
+    const post = await Post.findByPk(id);
+    if (!post) return res.status(404).json({ success: false, message: "Post not found" });
+
+    if (post.authorId !== authorId) {
+      return res.status(403).json({ success: false, message: "You are not the author of this post" });
+    }
+
+    await post.update({
+      content: content || post.content,
+      poll_options: pollOptions ? JSON.stringify(pollOptions) : post.poll_options
+    });
+
+    return res.status(200).json({ success: true, message: "Post updated successfully", data: post });
+  } catch (error) {
+    return res.status(500).json({ success: false, message: "Internal server error" });
+  }
+};
+
+export const deletePost = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const token = req.headers.authorization?.split(" ")[1];
+
+    if (!token) return res.status(401).json({ success: false, message: "Unauthorized" });
+
+    const decoded = jwt.verify(token, JWT_SECRET);
+    const authorId = decoded.userId || decoded.id || decoded.artistId;
+
+    const post = await Post.findByPk(id);
+    if (!post) return res.status(404).json({ success: false, message: "Post not found" });
+
+    if (post.authorId !== authorId) {
+      return res.status(403).json({ success: false, message: "You are not the author of this post" });
+    }
+
+    await post.destroy();
+    return res.status(200).json({ success: true, message: "Post deleted successfully" });
+  } catch (error) {
+    return res.status(500).json({ success: false, message: "Internal server error" });
+  }
+};
