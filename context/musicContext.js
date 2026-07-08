@@ -13,12 +13,15 @@ export const MusicProvider = ({ children }) => {
   const player = useAudioPlayer();
   const status = useAudioPlayerStatus(player);
 
+  //load the music context with songs from the backend
   const loadSongs = async () => {
     setIsLoading(true);
     try {
       let data;
+      //if it is an artist who has logged in,load their songs
       if (role == "artist") {
         data = await songsService.getSongsByArtist(2);
+        //otherwise load all the songs for users
       } else {
         data = await songsService.getAllSongs();
       }
@@ -29,10 +32,13 @@ export const MusicProvider = ({ children }) => {
       setIsLoading(false);
     }
   };
+  /*run the loadSongs() whenever there is a role change
+  i.e a user logs out and signs in as an artist
+  */
   useEffect(() => {
     loadSongs();
   }, [role]);
-
+  // enable changing between various playback modes
   const togglePlaybackMode = () => {
     setPlayBackMode((prevMode) => {
       if (prevMode === "sequential") return "shuffle";
@@ -42,13 +48,17 @@ export const MusicProvider = ({ children }) => {
   };
 
   useEffect(() => {
+    //check if a song playing has ended
     if (status.duration > 0 && status.currentTime >= status.duration - 1) {
+      //if so,start it again for repeat mode
       if (playBackMode === "repeat") {
         player.seekTo(0);
         player.play();
+        //or play a ranodm song in the list of songs
       } else if (playBackMode === "shuffle") {
         const randomIndex = Math.floor(Math.random() * songs.length);
         playSong(songs[randomIndex]);
+        //by default play the next song in the list
       } else {
         playNext();
       }
@@ -62,10 +72,12 @@ export const MusicProvider = ({ children }) => {
       return;
     }
     try {
+      //use song list from backend if the song is not a local file
       let source;
+      //check if the audioPath is a string(local file) or an object(from backend)
       if (typeof audioPath === "string") {
         const fullUrl = audioPath.startsWith("/")
-          ? `http://192.168.1.15:5000${audioPath}`
+          ? `http://192.168.1.7:5000${audioPath}`
           : audioPath;
         source = { uri: fullUrl };
       } else {

@@ -17,7 +17,6 @@ const CreatePostModal: React.FC<CreatePostModalProps> = ({
 
   const handleCreate = () => {
     if (!content.trim()) return;
-
     const postData = {
       content,
       post_type: postType,
@@ -29,6 +28,7 @@ const CreatePostModal: React.FC<CreatePostModalProps> = ({
             }
           : null,
     };
+
     onSubmit(postData);
     setContent("");
     setOptions(["", ""]);

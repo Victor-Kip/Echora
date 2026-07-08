@@ -1,15 +1,14 @@
 import { Feather } from "@expo/vector-icons";
-import { DrawerActions } from "@react-navigation/native";
 import { useNavigation, useRouter } from "expo-router";
-import React from "react";
+import { DrawerActions } from "expo-router/react-navigation";
 import {
-    ActivityIndicator,
-    Pressable,
-    ScrollView,
-    Text,
-    TextInput,
-    TouchableOpacity,
-    View,
+  ActivityIndicator,
+  Pressable,
+  ScrollView,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useMusic } from "../../../context/musicContext";

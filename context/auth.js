@@ -16,7 +16,7 @@ const AuthProvider = ({ children }) => {
       try {
         const authData = await AsyncStorage.getItem("authData");
         const userToken = await SecureStore.getItemAsync("userToken");
-        //check if there is data.if there is save it to the states
+        //check if there is data, if there is save it to the states
         if (authData && userToken) {
           const { role, user } = JSON.parse(authData);
           setToken(userToken);

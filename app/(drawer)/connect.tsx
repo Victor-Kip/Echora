@@ -2,47 +2,60 @@ import CreatePostModal from "@/components/connect/createPostModal";
 import PostCard from "@/components/connect/postcard";
 import { Feather } from "@expo/vector-icons";
 import { router } from "expo-router";
-import React, { useState } from "react";
+import { useEffect, useState } from "react";
 import { Text, TextInput, TouchableOpacity, View } from "react-native";
 import { FlatList } from "react-native-gesture-handler";
 import { SafeAreaView } from "react-native-safe-area-context";
+import api from "../services/api";
+type FeedPost = {
+  id: number;
+  [key: string]: any;
+};
 
-const MOCK_POSTS = [
-  {
-    id: 1,
-    content: "New song is out !",
-    post_type: "text",
-    poll_options: null,
-    author: {
-      username: "Jamie Doe",
-      role: "artist",
-    },
-  },
-  {
-    id: 2,
-    content: "Do you love the new song?",
-    post_type: "poll",
-    poll_options: ["Yes", "No"],
-    percentages: [70, 30],
-    author: {
-      username: "Jane Doe",
-      role: "user",
-    },
-  },
-];
 const Connect = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [activeFilter, setActiveFilter] = useState("For You");
   const [isCreatePostVisible, setIsCreatePostVisible] = useState(false);
+  const [posts, setPosts] = useState<FeedPost[]>([]);
+  //get all the posts
+  const handleGetFeed = async () => {
+    try {
+      const response = await api.get("/posts/feed");
+      const responseData = response.data;
+      const transformedPosts = responseData.data.map((post: any) => ({
+        ...post,
+        author: {
+          username: post.userAuthor?.username || "Unknown",
+          role: post.authorType || "user",
+        },
+        post_type: post.type,
+      }));
+      setPosts(transformedPosts);
+    } catch (err) {
+      console.error(`Error getting posts : ${err}`);
+    }
+  };
+  useEffect(() => {
+    handleGetFeed();
+  }, []);
+  //create a post
+  const handleCreatePost = async (postData: any) => {
+    try {
+      const response = await api.post("posts", postData);
+      const { responsedata } = response.data;
+      console.log(responsedata.data);
+    } catch (err) {
+      console.error(`Error creating post : ${err}`);
+    }
 
-  const handleCreatePost = () => {
+    console.log(`Post created!`, postData);
     setIsCreatePostVisible(false);
   };
 
   return (
     <SafeAreaView className="flex-1 bg-primary">
       <FlatList
-        data={MOCK_POSTS}
+        data={posts}
         keyExtractor={(item) => item.id.toString()}
         renderItem={({ item }) => <PostCard post={item} />}
         contentContainerStyle={{ paddingHorizontal: 24, paddingTop: 16 }}
@@ -71,7 +84,7 @@ const Connect = () => {
                 className="bg-gray-100 rounded-xl p-4 border border-blue-300 text-black"
               />
             </View>
-            {/*navigation and profile action*/}
+            {/*navigation and profile action.*/}
             <View className="flex-row items-center justify-between mb-6 ">
               <View className="flex-row items-center">
                 <TouchableOpacity

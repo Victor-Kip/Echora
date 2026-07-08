@@ -1,9 +1,11 @@
 import { LOCAL_SONGS } from "../../constants/SONGS.js";
 import api from "./api.js";
 
+// test songs if backend isnt working
 const dummySongs = [...LOCAL_SONGS];
 
 const songsService = {
+  //fetch all the songs saved in database
   getAllSongs: async () => {
     try {
       const response = await api.get("/audio");
@@ -11,10 +13,11 @@ const songsService = {
       return response.data.data || [];
     } catch (error) {
       console.error(error);
+      //if not able to fetch,use the locally saved test songs
       return dummySongs;
     }
   },
-
+  //get a specific song in the list of songs
   getSongById: async (id) => {
     try {
       const response = await api.get(`/audio/${id}`);
@@ -24,6 +27,7 @@ const songsService = {
       return dummySongs.find((song) => song.id === id);
     }
   },
+  //get the songs created bt a specific artist
   getSongsByArtist: async (artistId) => {
     try {
       const response = await api.get(`/audio/artist/${artistId}`);
