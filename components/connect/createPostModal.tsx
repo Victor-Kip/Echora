@@ -6,6 +6,14 @@ interface CreatePostModalProps {
   onClose: () => void;
   onSubmit: (postData: any) => void;
 }
+interface creatPostData {
+  content: string;
+  post_type: "text" | "poll";
+  poll_options?: {
+    options: string[];
+    votes: number[];
+  };
+}
 const CreatePostModal: React.FC<CreatePostModalProps> = ({
   visible,
   onClose,

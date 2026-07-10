@@ -1,7 +1,12 @@
+import Post from "@/app/types/post";
 import { Feather } from "@expo/vector-icons";
 import { Text, TouchableOpacity, View } from "react-native";
-const PostCard = ({ post }: { post: any }) => {
+interface PostCardProps {
+  post: Post;
+}
+const PostCard = ({ post }: PostCardProps) => {
   const { author, content, post_type, poll_options } = post;
+
   const options = Array.isArray(poll_options)
     ? poll_options
     : Array.isArray(poll_options?.options)

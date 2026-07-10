@@ -7,32 +7,45 @@ import { Text, TextInput, TouchableOpacity, View } from "react-native";
 import { FlatList } from "react-native-gesture-handler";
 import { SafeAreaView } from "react-native-safe-area-context";
 import api from "../services/api";
-type FeedPost = {
-  id: number;
-  [key: string]: any;
-};
-
+import Post from "../types/post";
+import RawPostFromBackend from "../types/rawPostFromBackend";
 const Connect = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [activeFilter, setActiveFilter] = useState("For You");
   const [isCreatePostVisible, setIsCreatePostVisible] = useState(false);
-  const [posts, setPosts] = useState<FeedPost[]>([]);
+  const [posts, setPosts] = useState<Post[]>([]);
   //get all the posts
   const handleGetFeed = async () => {
     try {
       const response = await api.get("/posts/feed");
       const responseData = response.data;
-      const transformedPosts = responseData.data.map((post: any) => ({
-        ...post,
+      const rawPost = responseData.data as RawPostFromBackend[];
+      console.log(responseData);
+      const transformedPosts: Post[] = rawPost.map((rawPost) => ({
+        id: rawPost.id,
+        content: rawPost.content,
+
         author: {
-          username: post.userAuthor?.username || "Unknown",
-          role: post.authorType || "user",
+          username:
+            rawPost.userAuthor?.username ||
+            rawPost.artistAuthor?.username ||
+            "unknown",
+          role: rawPost.authorType || "user",
         },
-        post_type: post.type,
+        post_type: rawPost.type as "text" | "poll",
+        authorId: rawPost.authorId,
+        is_pinned: rawPost.is_pinned,
+        like_count: rawPost.like_count,
+        comment_count: rawPost.comment_count,
+        share_count: rawPost.share_count,
+        poll_options: rawPost.poll_options,
+        poll_votes: rawPost.poll_votes,
+        createdAt: rawPost.createdAt,
+        updatedAt: rawPost.updatedAt,
       }));
       setPosts(transformedPosts);
     } catch (err) {
-      console.error(`Error getting posts : ${err}`);
+      console.error(`Error getting posts : ${err}`); //
     }
   };
   useEffect(() => {
@@ -43,7 +56,6 @@ const Connect = () => {
     try {
       const response = await api.post("posts", postData);
       const { responsedata } = response.data;
-      console.log(responsedata.data);
     } catch (err) {
       console.error(`Error creating post : ${err}`);
     }
