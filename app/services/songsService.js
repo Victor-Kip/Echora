@@ -23,8 +23,7 @@ const songsService = {
       const response = await api.get(`/audio/${id}`);
       return response.data;
     } catch (error) {
-      console.error(`API not ready, using dummy song for id ${id}:`);
-      return dummySongs.find((song) => song.id === id);
+      console.error(`Server error: ${error}`);
     }
   },
   //get the songs created bt a specific artist
