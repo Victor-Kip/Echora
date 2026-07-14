@@ -1,8 +1,4 @@
-import { LOCAL_SONGS } from "../../constants/SONGS.js";
 import api from "./api.js";
-
-// test songs if backend isnt working
-const dummySongs = [...LOCAL_SONGS];
 
 const songsService = {
   //fetch all the songs saved in database
@@ -13,8 +9,6 @@ const songsService = {
       return response.data.data || [];
     } catch (error) {
       console.error(error);
-      //if not able to fetch,use the locally saved test songs
-      return dummySongs;
     }
   },
   //get a specific song in the list of songs
