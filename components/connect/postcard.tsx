@@ -6,17 +6,31 @@ interface PostCardProps {
 }
 const PostCard = ({ post }: PostCardProps) => {
   const { author, content, post_type, poll_options } = post;
+  const getOptions = (data: any): string[] => {
+    if (!data) return [];
+    if (Array.isArray(data)) return data;
+    if (data.options && Array.isArray(data.options)) return data.options;
+    return [];
+  };
+  const getVotes = (data: any): number[] => {
+    if (!data) return [];
+    if (data.votes && Array.isArray(data.votes)) return data.votes;
+    if (Array.isArray(data)) return data.map(() => 0);
+    return [];
+  };
 
-  const options = Array.isArray(poll_options)
-    ? poll_options
-    : Array.isArray(poll_options?.options)
-      ? poll_options.options
-      : [];
-  const percentages = Array.isArray(post?.percentages)
-    ? post.percentages
-    : Array.isArray(poll_options?.percentages)
-      ? poll_options.percentages
-      : [];
+  const getPercentage = (votes: number[]): number[] => {
+    if (votes.length === 0) return [];
+    const total = votes.reduce((sum, v) => sum + v, 0);
+    return total > 0
+      ? votes.map((v) => Math.round(v / total) * 100)
+      : votes.map(() => 0);
+  };
+
+  const options = getOptions(poll_options);
+  const votes = getVotes(poll_options);
+  const percentages = getPercentage(votes);
+
   return (
     <View className="w-full bg-white rounded-xl mb-6 p-4 pt-12 pb-14 relative min-h-[180px0">
       <View className="absolute top-3 left-4 flex-row items-center">
@@ -41,14 +55,14 @@ const PostCard = ({ post }: PostCardProps) => {
               return (
                 <View
                   key={idx}
-                  className="w-full bg-gray-100 rounded-lg overflow-hidden h-10 justify-center relative mb-2"
+                  className="w-full bg-blue-400 rounded-lg overflow-hidden h-10 justify-center relative mb-2"
                 >
                   <View
                     style={{ width: `${percentage}%` }}
                     className={`absolute top-0 bottom-0 left-0 ${idx === 0 ? "bg-green-600" : "bg-red-700"}`}
                   />
                   <View className="flex-row justify-between px-3 z-10 w-full items-center">
-                    <Text className="text-white font-medium">{option}</Text>
+                    <Text className="text-black font-medium">{option}</Text>
                     <Text className="text-white font-bold">{percentage}%</Text>
                   </View>
                 </View>

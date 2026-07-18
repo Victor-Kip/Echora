@@ -54,12 +54,12 @@ const Connect = () => {
   //create a post
   const handleCreatePost = async (postData: any) => {
     try {
-      const response = await api.post("posts", postData);
-      const { responsedata } = response.data;
+      await api.post("posts", postData);
     } catch (err) {
+      alert("An error occured");
       console.error(`Error creating post : ${err}`);
     }
-
+    alert("Post created!");
     console.log(`Post created!`, postData);
     setIsCreatePostVisible(false);
   };

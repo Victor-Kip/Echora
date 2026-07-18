@@ -6,7 +6,10 @@ export default interface Post {
   };
   content: string;
   post_type: "text" | "poll";
-  poll_options?: string[] | null;
+  poll_options: {
+    votes: string[];
+    options: string[];
+  } | null;
   poll_votes?: number[] | null;
   authorId: number;
   is_pinned: boolean;

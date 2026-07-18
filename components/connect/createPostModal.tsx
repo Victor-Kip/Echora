@@ -12,7 +12,7 @@ interface creatPostData {
   poll_options?: {
     options: string[];
     votes: number[];
-  };
+  } | null;
 }
 const CreatePostModal: React.FC<CreatePostModalProps> = ({
   visible,
@@ -25,7 +25,7 @@ const CreatePostModal: React.FC<CreatePostModalProps> = ({
 
   const handleCreate = () => {
     if (!content.trim()) return;
-    const postData = {
+    const postData: creatPostData = {
       content,
       post_type: postType,
       poll_options:

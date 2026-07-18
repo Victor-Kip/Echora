@@ -16,7 +16,10 @@ export default interface RawPostFromBackend {
   like_count: number;
   comment_count: number;
   share_count: number;
-  poll_options: string[] | null;
+  poll_options: {
+    votes: string[];
+    options: string[];
+  } | null;
   poll_votes: number[] | null;
   createdAt: string;
   updatedAt: string;
