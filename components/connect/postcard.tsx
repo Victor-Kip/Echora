@@ -1,4 +1,4 @@
-import Post from "@/app/types/post";
+import Post from "@/types/post";
 import { Feather } from "@expo/vector-icons";
 import { Text, TouchableOpacity, View } from "react-native";
 interface PostCardProps {

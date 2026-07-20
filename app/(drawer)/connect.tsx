@@ -1,5 +1,7 @@
 import CreatePostModal from "@/components/connect/createPostModal";
 import PostCard from "@/components/connect/postcard";
+import Post from "@/types/post";
+import RawPostFromBackend from "@/types/rawPostFromBackend";
 import { Feather } from "@expo/vector-icons";
 import { router } from "expo-router";
 import { useEffect, useState } from "react";
@@ -7,8 +9,6 @@ import { ActivityIndicator, Text, TextInput, TouchableOpacity, View } from "reac
 import { FlatList, RefreshControl } from "react-native-gesture-handler";
 import { SafeAreaView } from "react-native-safe-area-context";
 import api from "../services/api";
-import Post from "../types/post";
-import RawPostFromBackend from "../types/rawPostFromBackend";
 const Connect = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [activeFilter, setActiveFilter] = useState("For You");
@@ -22,7 +22,6 @@ const Connect = () => {
       const response = await api.get("/posts/feed");
       const responseData = response.data;
       const rawPost = responseData.data as RawPostFromBackend[];
-      console.log(responseData);
       const transformedPosts: Post[] = rawPost.map((rawPost) => ({
         id: rawPost.id,
         content: rawPost.content,
