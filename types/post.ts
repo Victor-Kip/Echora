@@ -10,7 +10,7 @@ export default interface Post {
     votes: string[];
     options: string[];
   } | null;
-  poll_votes?: number[] | null;
+  poll_votes?: Record<string, number> | null;
   authorId: number;
   is_pinned: boolean;
   like_count: number;

@@ -1,11 +1,21 @@
 import Post from "@/types/post";
 import { Feather } from "@expo/vector-icons";
+import { useState } from "react";
 import { Text, TouchableOpacity, View } from "react-native";
 interface PostCardProps {
   post: Post;
+  onVote:(postId:number,optionIndex:number)=>void;
+  hasVoted?:boolean;
 }
-const PostCard = ({ post }: PostCardProps) => {
-  const { author, content, post_type, poll_options } = post;
+const PostCard = ({ post,onVote,hasVoted = false }: PostCardProps) => {
+  const { id,author, content, post_type, poll_options } = post;
+  const [selectedOption,setSelectedOption] = useState<number | null>(null);
+
+  const handleOptionPressed = (index:number)=>{
+    if(hasVoted || selectedOption !== null) return;
+    setSelectedOption(index);
+    onVote(id,index);
+  }
   const getOptions = (data: any): string[] => {
     if (!data) return [];
     if (Array.isArray(data)) return data;
@@ -52,10 +62,15 @@ const PostCard = ({ post }: PostCardProps) => {
           <View className="w-full space-y-2 mt-1">
             {options.map((option: string, idx: number) => {
               const percentage = Number(percentages[idx] ?? 0);
+              const isSelected = selectedOption === idx;
+              const isVoted = hasVoted || selectedOption !== null;
               return (
-                <View
+
+                <TouchableOpacity
                   key={idx}
-                  className="w-full bg-blue-400 rounded-lg overflow-hidden h-10 justify-center relative mb-2"
+                  onPress={()=>handleOptionPressed(idx)}
+                  disabled = {isVoted}
+                  className={`w-full rounded-lg overflow-hidden h-10 justify-center relative mb-2 ${isVoted ? "opacity-80" : "active:opacity-70"}`}
                 >
                   <View
                     style={{ width: `${percentage}%` }}
@@ -63,9 +78,10 @@ const PostCard = ({ post }: PostCardProps) => {
                   />
                   <View className="flex-row justify-between px-3 z-10 w-full items-center">
                     <Text className="text-black font-medium">{option}</Text>
-                    <Text className="text-white font-bold">{percentage}%</Text>
+                    <Text className="text-white font-bold">{isVoted ? percentage : ""}%</Text>
                   </View>
-                </View>
+                  </TouchableOpacity>
+                
               );
             })}
           </View>

@@ -9,12 +9,15 @@ import { ActivityIndicator, Text, TextInput, TouchableOpacity, View } from "reac
 import { FlatList, RefreshControl } from "react-native-gesture-handler";
 import { SafeAreaView } from "react-native-safe-area-context";
 import api from "../services/api";
+import postService from "../services/postService";
+const { votePoll } = postService;
 const Connect = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [activeFilter, setActiveFilter] = useState("For You");
   const [isCreatePostVisible, setIsCreatePostVisible] = useState(false);
   const [posts, setPosts] = useState<Post[]>([]);
   const [loading,setLoading] = useState(true);
+
   //get all the posts
   const handleGetFeed = async () => {
     setLoading(true);
@@ -55,6 +58,7 @@ const Connect = () => {
   useEffect(() => {
     handleGetFeed();
   }, []);
+
   //create a post
   const handleCreatePost = async (postData: any) => {
     try {
@@ -67,6 +71,31 @@ const Connect = () => {
     console.log(`Post created!`, postData);
     setIsCreatePostVisible(false);
   };
+  
+  //vote on a poll
+  const handleVote = async (postId:number, optionIndex:number)=>{
+    try{
+      setPosts(prev=>prev.map(post=>{
+        if(post.id !== postId) return post;
+
+        const votes = post.poll_votes || {};
+        const updatedVotes = {
+          ...votes,
+          [optionIndex]:(votes[optionIndex] || 0) + 1
+        }
+        return{...post,
+          poll_votes:updatedVotes
+        }
+      }))
+      await votePoll(postId,optionIndex);
+      await handleGetFeed();
+    }
+    catch(error){
+      console.error(`Vote failed ${error}`);
+      await handleGetFeed();
+      
+    }
+  }
 
   return (
     <SafeAreaView className="flex-1 bg-primary">
@@ -75,7 +104,7 @@ const Connect = () => {
         data={posts}
         refreshControl={<RefreshControl refreshing={loading} onRefresh={handleGetFeed} />}
         keyExtractor={(item) => item.id.toString()}
-        renderItem={({ item }) => <PostCard post={item} />}
+        renderItem={({ item }) => <PostCard post={item} onVote={handleVote} />}
         contentContainerStyle={{ paddingHorizontal: 24, paddingTop: 16 }}
         ListHeaderComponent={
           <>

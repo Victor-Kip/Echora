@@ -20,7 +20,7 @@ export default interface RawPostFromBackend {
     votes: string[];
     options: string[];
   } | null;
-  poll_votes: number[] | null;
+  poll_votes?: Record<string, number> | null;
   createdAt: string;
   updatedAt: string;
 }
