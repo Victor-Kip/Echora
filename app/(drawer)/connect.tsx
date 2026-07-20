@@ -3,8 +3,8 @@ import PostCard from "@/components/connect/postcard";
 import { Feather } from "@expo/vector-icons";
 import { router } from "expo-router";
 import { useEffect, useState } from "react";
-import { Text, TextInput, TouchableOpacity, View } from "react-native";
-import { FlatList } from "react-native-gesture-handler";
+import { ActivityIndicator, Text, TextInput, TouchableOpacity, View } from "react-native";
+import { FlatList, RefreshControl } from "react-native-gesture-handler";
 import { SafeAreaView } from "react-native-safe-area-context";
 import api from "../services/api";
 import Post from "../types/post";
@@ -14,8 +14,10 @@ const Connect = () => {
   const [activeFilter, setActiveFilter] = useState("For You");
   const [isCreatePostVisible, setIsCreatePostVisible] = useState(false);
   const [posts, setPosts] = useState<Post[]>([]);
+  const [loading,setLoading] = useState(true);
   //get all the posts
   const handleGetFeed = async () => {
+    setLoading(true);
     try {
       const response = await api.get("/posts/feed");
       const responseData = response.data;
@@ -47,6 +49,9 @@ const Connect = () => {
     } catch (err) {
       console.error(`Error getting posts : ${err}`); //
     }
+    finally{
+      setLoading(false);
+    }
   };
   useEffect(() => {
     handleGetFeed();
@@ -66,8 +71,10 @@ const Connect = () => {
 
   return (
     <SafeAreaView className="flex-1 bg-primary">
-      <FlatList
+      {loading ? (<ActivityIndicator size={"large"} color={"#3b82f6"}/>): (
+        <FlatList
         data={posts}
+        refreshControl={<RefreshControl refreshing={loading} onRefresh={handleGetFeed} />}
         keyExtractor={(item) => item.id.toString()}
         renderItem={({ item }) => <PostCard post={item} />}
         contentContainerStyle={{ paddingHorizontal: 24, paddingTop: 16 }}
@@ -137,7 +144,7 @@ const Connect = () => {
             </View>
           </>
         }
-      />
+      />)}
       <CreatePostModal
         visible={isCreatePostVisible}
         onClose={() => setIsCreatePostVisible(false)}
